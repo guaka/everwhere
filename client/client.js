@@ -1,8 +1,10 @@
 Players = new Meteor.Collection("players");
 
+
 Template.leaderboard.players = function () {
-    return Players.find({}, {sort: {name: 1}});
+    return Players.find({}, {sort: {player_id: 1}});
 };
+
 
 Template.number.number = function() {
     console.log(lat);
@@ -13,9 +15,10 @@ Template.number.number = function() {
 Template.status.events({
     'focusout #input-status': function (evt) {
         console.log(evt.target.value);
-        Players.update(Session.get('uuid'), { status: evt.target.value });
+        Players.update(Session.get('player_id'), { $set: { status: evt.target.value }});
     }
 });
+
 
 
 var delete_cookie = function() {
@@ -23,16 +26,16 @@ var delete_cookie = function() {
 }
 
 
-var uuid, lat, lng;
+var lat, lng;
 
-var updatePlayer = function(uuid, lat, lng) {
+var updatePlayer = function(lat, lng) {
     lat = randomize(lat);
     lng = randomize(lng);
     
-    if (Players.find( { name: uuid } ).count() == 0) {
+    if (Players.find( { player_id: Session.get('player_id') } ).count() == 0) {
         Players.insert(
-            { name: uuid,  lat: lat, lng: lng, status: 'Noob' },
-            { name: uuid }
+            { player_id: Session.get('player_id'),  lat: lat, lng: lng, status: 'Noob' },
+            { player_id: Session.get('player_id') }
             // upsert doesn't work yet in Minimongo
         );
     };
@@ -60,16 +63,18 @@ function GetLocation(location) {
     map.addLayer(markers);
 };
 
+
 Meteor.startup(function () {
     console.log('startup');
-    
-    if (!document.cookie.match("uuid")) {
-        uuid = somewhat_uuid();
-        document.cookie = "uuid=" + uuid + ";expires=Sat, 23 Mar 2013 00:00:0 GMT";    
-        Session.set('uuid', uuid);
+
+    var player_id;
+    if (!document.cookie.match("player_id")) {
+        player_id = Players.insert({status: 'Yo', idle: false});
+        Session.set('player_id', player_id);
+        document.cookie = "player_id=" + player_id + ";expires=Sat, 23 Mar 2013 00:00:0 GMT";    
     } else {
-        uuid = document.cookie.replace('uuid=', '');
-        Session.set('uuid', uuid);
+        player_id = document.cookie.replace('player_id=', '');
+        Session.set('player_id', player_id);
     }
     
     map = new OpenLayers.Map('map');
@@ -79,12 +84,14 @@ Meteor.startup(function () {
 });
 
 Meteor.autosubscribe(function() {
+    Meteor.subscribe('players');
     console.log('autosub');
     
     if (lat !== undefined)
-        updatePlayer(uuid, lat, lng);
+        updatePlayer(lat, lng);
+
     Players.find({}).map(function(val) {
-        console.log(val.lat + ' ' + val.lng + ' ' + val.status);
+        console.log(val.player_id + ' ' + val.lat + ' ' + val.lng + ' ' + val.status);
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.lng, val.lat).transform(fromProjection, toProjection), icon.clone()));
     });
 });
