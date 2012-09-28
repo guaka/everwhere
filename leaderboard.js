@@ -41,23 +41,25 @@ if (Meteor.isClient) {
         document.cookie =  'id=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }
 
+    var markers = new OpenLayers.Layer.Markers( "Markers" );
+    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984                                                                                     
+    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection                                                      
+    var zoom           = 12;
+
     Meteor.startup(function () {
 
         var uuid;
-        if (!document.cookie.match("id")) {
+        if (!document.cookie.match("uuid")) {
             uuid = somewhat_uuid();
-            document.cookie = "id=" + uuid + ";expires=Sat, 23 Mar 2013 00:00:0 GMT";    
+            document.cookie = "uuid=" + uuid + ";expires=Sat, 23 Mar 2013 00:00:0 GMT";    
         } else {
-            uuid = document.cookie.replace('id=', '');
+            uuid = document.cookie.replace('uuid=', '');
         }
 
         var map = new OpenLayers.Map('map');
         var mapnik         = new OpenLayers.Layer.OSM();
         map.addLayer(mapnik);
         
-        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984                                                                                     
-        var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection                                                      
-        var zoom           = 12;
 
         var random = function() {
             var r = Math.random() - 0.5;
@@ -73,13 +75,23 @@ if (Meteor.isClient) {
             return x + random() * 0.01;
         }
         
+        var updatePlayer = function(uuid, lat, lng) {
+
+            if (Players.find( { name: uuid } ).count() == 0) {
+                Players.insert(
+                    { name: uuid,  lat: lat, lng: lng },
+                    { name: uuid },
+                    true // upsert, but doesn't work
+                );
+            };
+        }
+
         function GetLocation(location) {
             var lng = location.coords.longitude;
             var lat = location.coords.latitude;
             var position = new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection);
             map.setCenter(position, zoom);
 
-            var markers = new OpenLayers.Layer.Markers( "Markers" );
             
             var size = new OpenLayers.Size(21, 25);
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
@@ -87,22 +99,28 @@ if (Meteor.isClient) {
             
             lat = randomize(lat);
             lng = randomize(lng);
-            markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection),icon));
-
-            Players.insert({name: uuid,
-                            lat: lat,
-                            lng: lng,
-                            session: Session.get()
-                           });
-
+            updatePlayer(uuid, lat, lng);
+            markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection), icon));
             map.addLayer(markers);
-        }
+            
+        };
         navigator.geolocation.getCurrentPosition(GetLocation);
+        
+
     });
 
 
+    Meteor.autosubscribe(function() {
+        console.log('autosub');
+        Players.find({}).map(function(val) {
+            console.log(val.lat + ' ' + val.lng);
+        });
+    });
 
 }
+
+
+
 
 // On server startup, create some players if the database is empty.
 if (Meteor.isServer) {
