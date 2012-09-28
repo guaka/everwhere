@@ -1,3 +1,4 @@
+
 Players = new Meteor.Collection("players");
 
 
@@ -7,7 +8,6 @@ Template.leaderboard.players = function () {
 
 
 Template.number.number = function() {
-    console.log(lat);
     return Players.find({}).count();
 };
 
@@ -20,25 +20,16 @@ Template.status.events({
 });
 
 
+var updatePlayer = function() {
+    var pid = Session.get('player_id');
+    if (Players.find( { player_id: pid } ).count() == 0) {
 
-var delete_cookie = function() {
-    document.cookie =  'id=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
-
-
-var lat, lng;
-
-var updatePlayer = function(lat, lng) {
-    lat = randomize(lat);
-    lng = randomize(lng);
-    
-    if (Players.find( { player_id: Session.get('player_id') } ).count() == 0) {
-        Players.insert(
-            { player_id: Session.get('player_id'),  lat: lat, lng: lng, status: 'Noob' },
-            { player_id: Session.get('player_id') }
-            // upsert doesn't work yet in Minimongo
+    } else {
+        Players.update(
+            pid,
+            { $set: { latlng: Session.get('latlng') } }
         );
-    };
+    }
 }
 
 var markers = new OpenLayers.Layer.Markers( "Markers" );
@@ -55,28 +46,28 @@ var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', s
 var map, mapnik;
 
 function GetLocation(location) {
-    lng = location.coords.longitude;
-    lat = location.coords.latitude;
+    var lng = location.coords.longitude;
+    var lat = location.coords.latitude;
+    Session.set('latlng', [ lat, lng ]);
     var position = new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection);
     map.setCenter(position, zoom);
-    
     map.addLayer(markers);
+
+    var pid;
+    if (!$.cookie("player_id") || Players.find().count() == 0) {
+        pid = Players.insert({status: 'Yo', latlng: [ lat, lng], idle: false});
+        Session.set('player_id', pid);
+        $.cookie("player_id", pid);
+    } else {
+        pid = $.cookie('player_id');
+        Session.set('player_id', pid);
+    }
 };
 
 
 Meteor.startup(function () {
     console.log('startup');
 
-    var player_id;
-    if (!document.cookie.match("player_id")) {
-        player_id = Players.insert({status: 'Yo', idle: false});
-        Session.set('player_id', player_id);
-        document.cookie = "player_id=" + player_id + ";expires=Sat, 23 Mar 2013 00:00:0 GMT";    
-    } else {
-        player_id = document.cookie.replace('player_id=', '');
-        Session.set('player_id', player_id);
-    }
-    
     map = new OpenLayers.Map('map');
     mapnik = new OpenLayers.Layer.OSM();
     map.addLayer(mapnik);
@@ -87,12 +78,12 @@ Meteor.autosubscribe(function() {
     Meteor.subscribe('players');
     console.log('autosub');
     
-    if (lat !== undefined)
-        updatePlayer(lat, lng);
+    if (Session.get('latlng') !== undefined)
+        updatePlayer();
 
     Players.find({}).map(function(val) {
-        console.log(val.player_id + ' ' + val.lat + ' ' + val.lng + ' ' + val.status);
-        markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.lng, val.lat).transform(fromProjection, toProjection), icon.clone()));
+        console.log(val.player_id + ' ' + Session.get('latlng') + ' ' + val.status);
+        markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.latlng[1], val.latlng[0]).transform(fromProjection, toProjection), icon.clone()));
     });
 });
 
