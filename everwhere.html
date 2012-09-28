@@ -9,6 +9,7 @@
   <div id="map"></div>
   <div id="outer">
     {{> number}}
+    {{> status}}
     {{> leaderboard}}
   </div>
 </body>
@@ -21,6 +22,9 @@
   </div>
 </template>
 
+<template name="status">
+  <input id="input-status" type="text" value="{{status}}">
+</template>
 
 
 <template name="leaderboard">
@@ -29,17 +33,6 @@
       {{> player}}
     {{/each}}
   </div>
-
-  {{#if selected_name}}
-  <div class="details">
-    <div class="name">{{selected_name}}</div>
-    <input type="button" class="inc" value="Give 5 points" />
-  </div>
-  {{/if}}
-
-  {{#unless selected_name}}
-  <div class="none">Click a player to select</div>
-  {{/unless}}
 </template>
 
 
@@ -47,7 +40,7 @@
 <template name="player">
   <div class="player {{selected}}">
     <span class="name">{{name}}</span>
-    <span class="score">{{score}}</span>
+    <span class="score">{{status}}</span>
     <span class="lat">{{lat}}</span>
     <span class="lng">{{lng}}</span>
   </div>
