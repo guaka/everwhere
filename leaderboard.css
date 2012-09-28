@@ -24,8 +24,8 @@ body {
 
 .player .name {
     display: inline-block;
-    width: 300px;
-    font-size: 1.75em;
+    width: 250px;
+    font-size: 1.5em;
 }
 
 .player .score {
@@ -35,6 +35,11 @@ body {
     font-size: 2em;
     font-weight: bold;
     color: #777;
+}
+
+.player .lng,
+.player .lat { 
+font-size: 0.5em; 
 }
 
 .player.selected {
