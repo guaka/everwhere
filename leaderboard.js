@@ -46,15 +46,25 @@ if (Meteor.isClient) {
     var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection                                                      
     var zoom           = 12;
 
+    var uuid, lat, lng;
+    
+    var updatePlayer = function(uuid, lat, lng) {
+        if (Players.find( { name: uuid } ).count() == 0) {
+            Players.insert(
+                { name: uuid,  lat: lat, lng: lng },
+                { name: uuid },
+                true // upsert, but doesn't work
+            );
+        };
+    }
+
+    var size = new OpenLayers.Size(21, 25);
+    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+    var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
+    
+
     Meteor.startup(function () {
 
-        var uuid;
-        if (!document.cookie.match("uuid")) {
-            uuid = somewhat_uuid();
-            document.cookie = "uuid=" + uuid + ";expires=Sat, 23 Mar 2013 00:00:0 GMT";    
-        } else {
-            uuid = document.cookie.replace('uuid=', '');
-        }
 
         var map = new OpenLayers.Map('map');
         var mapnik         = new OpenLayers.Layer.OSM();
@@ -75,45 +85,35 @@ if (Meteor.isClient) {
             return x + random() * 0.01;
         }
         
-        var updatePlayer = function(uuid, lat, lng) {
-
-            if (Players.find( { name: uuid } ).count() == 0) {
-                Players.insert(
-                    { name: uuid,  lat: lat, lng: lng },
-                    { name: uuid },
-                    true // upsert, but doesn't work
-                );
-            };
-        }
-
         function GetLocation(location) {
-            var lng = location.coords.longitude;
-            var lat = location.coords.latitude;
+            lng = location.coords.longitude;
+            lat = location.coords.latitude;
             var position = new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection);
             map.setCenter(position, zoom);
-
-            
-            var size = new OpenLayers.Size(21, 25);
-            var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-            var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
             
             lat = randomize(lat);
             lng = randomize(lng);
-            updatePlayer(uuid, lat, lng);
             markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection), icon));
             map.addLayer(markers);
             
         };
         navigator.geolocation.getCurrentPosition(GetLocation);
-        
-
     });
-
 
     Meteor.autosubscribe(function() {
         console.log('autosub');
+
+        if (!document.cookie.match("uuid")) {
+            uuid = somewhat_uuid();
+            document.cookie = "uuid=" + uuid + ";expires=Sat, 23 Mar 2013 00:00:0 GMT";    
+        } else {
+            uuid = document.cookie.replace('uuid=', '');
+        }
+
+        updatePlayer(uuid, lat, lng);
         Players.find({}).map(function(val) {
             console.log(val.lat + ' ' + val.lng);
+            markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.lng, val.lat).transform(fromProjection, toProjection), icon.clone()));
         });
     });
 
