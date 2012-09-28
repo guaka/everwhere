@@ -30,6 +30,12 @@ if (Meteor.isClient) {
     });
     
 
+    Template.number.number = function() {
+        console.log(lat);
+        return Players.find({}).count();
+    };
+    
+
     var delete_cookie = function() {
         document.cookie =  'id=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }

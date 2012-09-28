@@ -1,14 +1,27 @@
 <head>
-  <title>Everwhere</title>
+  <title>Everwhe.re | creating real life connections</title>
   <script src="client/lib/external/OpenLayers.js"></script>
 </head>
+
+
 
 <body>
   <div id="map"></div>
   <div id="outer">
+    {{> number}}
     {{> leaderboard}}
   </div>
 </body>
+
+
+
+<template name="number">
+  <div class="number">
+    {{number}} people online now
+  </div>
+</template>
+
+
 
 <template name="leaderboard">
   <div class="leaderboard">
@@ -28,6 +41,8 @@
   <div class="none">Click a player to select</div>
   {{/unless}}
 </template>
+
+
 
 <template name="player">
   <div class="player {{selected}}">
