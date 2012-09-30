@@ -25,14 +25,26 @@ Template.status.status = function() {
 };
 
 
+var getUsername = function() {
+    if (Meteor.user()) {
+        return Meteor.user().profile.name;
+    } else {
+        return 'unknown';
+    }
+}
+
 Template.status.events({
     'focusout #input-status': function (evt) {
         console.log(evt.target.value);
-        Players.update(Session.get('player_id'), { $set: { status: evt.target.value }});
+        Players.update(Session.get('player_id'), { $set: { status: evt.target.value,
+                                                           name: getUsername()
+                                                         }});
     },
     'keypress': function (evt) {
         if (evt.keyCode == 13) {
-            Players.update(Session.get('player_id'), { $set: { status: $('#input-status')[0].value }});
+            Players.update(Session.get('player_id'), { $set: { status: $('#input-status')[0].value,
+                                                               name: getUsername()
+                                                             }});
         }
     }
 });
