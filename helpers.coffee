@@ -8,11 +8,5 @@ random = ->
   if r < 0 then r - 0.2 else r + 0.2
 
 randomize = (x) ->
-  x + random() * 0.02
-
-somewhat_uuid = ->
-  "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace /[xy]/g, (c) ->
-    r = Math.random() * 16 | 0
-    v = (if c is "x" then r else (r & 0x3 | 0x8))
-    v.toString 16
+  x + 0.02 * random()
 
