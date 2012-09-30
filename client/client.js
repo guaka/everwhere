@@ -62,7 +62,9 @@ Meteor.startup(function () {
 
 
 var insertPlayer = function () {
+    console.log('insertPlayer');
     pid = Players.insert({status: 'Yo', latlng: Session.get('latlng'), idle: false});
+    alert('inserting player' + pid);
     Session.set('player_id', pid);
     $.cookie("player_id", pid);
     return pid;
@@ -81,7 +83,7 @@ Meteor.subscribe('players', function() {
             console.log('cookieinsert');
             pid = insertPlayer();
         } else {
-            // If there is a cookie we can set the session
+            console.log('set session from cookie');
             pid = $.cookie('player_id');
             Session.set('player_id', pid);
             
@@ -100,12 +102,10 @@ Meteor.subscribe('players', function() {
 
     Players.find({}).map(function(val) {
         console.log(val.player_id + ' ' + Session.get('latlng') + ' ' + val.status);
+        console.log('addMarker');
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.latlng[1], val.latlng[0]).transform(fromProjection, toProjection), icon.clone()));
     });
 });
 
-// Meteor.autosubscribe(function() {
-//    console.log('autosub');
-// });
 
 
