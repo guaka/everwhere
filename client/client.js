@@ -44,7 +44,7 @@ Template.status.events({
 function GetLocation(location) {
     var lng = location.coords.longitude;
     var lat = location.coords.latitude;
-    Session.set('latlng', [ lat, lng ]);
+    Session.set('latlng', JSON.stringify([ lat, lng ]));
     var position = new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection);
     map.setCenter(position, zoom);
     map.addLayer(markers);
@@ -63,7 +63,7 @@ Meteor.startup(function () {
 
 var insertPlayer = function () {
     console.log('insertPlayer');
-    pid = Players.insert({status: 'Yo', latlng: Session.get('latlng'), idle: false});
+    pid = Players.insert({status: 'Yo', latlng: JSON.parse(Session.get('latlng')), idle: false});
     alert('inserting player' + pid);
     Session.set('player_id', pid);
     $.cookie("player_id", pid);
@@ -94,7 +94,7 @@ Meteor.subscribe('players', function() {
             } else {
                 Players.update(
                     pid,
-                    { $set: { latlng: Session.get('latlng') } }
+                    { $set: { latlng: JSON.parse(Session.get('latlng')) } }
                 );
             }
         }
