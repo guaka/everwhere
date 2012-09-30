@@ -12,11 +12,12 @@ var map, mapnik;
 
 
 Template.leaderboard.players = function () {
-    return Players.find({}, { sort: { player_id: 1 }});
+    return Players.find({ _id : { $ne : Session.get('player_id') }}, 
+                        { sort: { player_id: 1 }});
 };
 
 Template.number.number = function() {
-    return Players.find({}).count();
+    return Players.find({}).count() - 1;
 };
 
 Template.status.status = function() {
@@ -33,18 +34,30 @@ var getUsername = function() {
     }
 }
 
+var updatePlayer = function() {
+    Players.update(Session.get('player_id'), { $set: { status: $('#input-status')[0].value,
+                                                       name: getUsername()
+                                                     }});
+}
+
+var insertPlayer = function () {
+    console.log('insertPlayer');
+    pid = Players.insert({status: 'Yo', latlng: JSON.parse(Session.get('latlng')), idle: false});
+    Session.set('player_id', pid);
+    $.cookie("player_id", pid);
+    return pid;
+}
+
+
+
 Template.status.events({
     'focusout #input-status': function (evt) {
         console.log(evt.target.value);
-        Players.update(Session.get('player_id'), { $set: { status: evt.target.value,
-                                                           name: getUsername()
-                                                         }});
+        updatePlayer();
     },
     'keypress': function (evt) {
         if (evt.keyCode == 13) {
-            Players.update(Session.get('player_id'), { $set: { status: $('#input-status')[0].value,
-                                                               name: getUsername()
-                                                             }});
+            updatePlayer();
         }
     }
 });
@@ -54,8 +67,8 @@ Template.status.events({
 
 
 function GetLocation(location) {
-    var lng = location.coords.longitude;
-    var lat = location.coords.latitude;
+    var lng = randomize(location.coords.longitude);
+    var lat = randomize(location.coords.latitude);
     Session.set('latlng', JSON.stringify([ lat, lng ]));
     var position = new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection);
     map.setCenter(position, zoom);
@@ -73,14 +86,6 @@ Meteor.startup(function () {
 });
 
 
-var insertPlayer = function () {
-    console.log('insertPlayer');
-    pid = Players.insert({status: 'Yo', latlng: JSON.parse(Session.get('latlng')), idle: false});
-    alert('inserting player' + pid);
-    Session.set('player_id', pid);
-    $.cookie("player_id", pid);
-    return pid;
-}
 
 
 Meteor.subscribe('players', function() {
