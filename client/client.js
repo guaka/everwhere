@@ -34,15 +34,22 @@ var getUsername = function() {
     }
 }
 
-var updatePlayer = function() {
-    Players.update(Session.get('player_id'), { $set: { status: $('#input-status')[0].value,
-                                                       name: getUsername()
-                                                     }});
+
+
+var updatePlayer = function(s) {
+    Players.update(Session.get('player_id'), { $set: 
+                                               { status: $('#input-status')[0].value,
+                                                 name: getUsername(),
+                                                 lastSeen: new Date().getTime()
+                                               }});
 }
 
 var insertPlayer = function () {
     console.log('insertPlayer');
-    pid = Players.insert({status: 'Yo', latlng: JSON.parse(Session.get('latlng')), idle: false});
+    pid = Players.insert({ status: 'welcome', 
+                           latlng: JSON.parse(Session.get('latlng')), 
+                           lastSeen: new Date().getTime()
+                         });
     Session.set('player_id', pid);
     $.cookie("player_id", pid);
     return pid;
@@ -55,9 +62,10 @@ Template.status.events({
         console.log(evt.target.value);
         updatePlayer();
     },
-    'keypress': function (evt) {
+    'keyup #input': function (evt) {
         if (evt.keyCode == 13) {
             updatePlayer();
+            $('#input-status').focus();
         }
     }
 });
