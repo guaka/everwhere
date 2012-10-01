@@ -21,7 +21,7 @@ Template.status.status = function() {
 };
 
 Template.messages.messages = function() {
-    var p = Players.find({}, { sort : { lastSeen: 1 }});
+    var p = Players.find({}, { sort : { lastSeen: -1 }});
     return p.map(function (i) {
         i.lastSeen = new Date(i.lastSeen);
         i.lastSeen = i.lastSeen.getHours() + ':' + i.lastSeen.getMinutes();
