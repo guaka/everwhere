@@ -8,10 +8,23 @@
     {{> loginButtons}}
     {{> number}}
     {{> status}}
+    {{> todo}}
     {{> messages}}
-    {{> leaderboard}}
   </div>
 </body>
+
+<template name="todo">
+  <div class="todo">
+    <h3>todo</h3>
+    <ol>
+      <li>new messages on top?</li>
+      <li>something with markers</li>
+      <li>colors/design</li>
+      <li>only show local messages</li>
+    </ol>
+  </div>
+</template>
+
 
 <template name="messages">
   <div id="chat">
@@ -22,7 +35,7 @@
 </template>
 
 <template name="message">
-  <p>{{name}}: {{message}}</p>
+  <p>{{lastSeen}}: {{name}}, <span class="latlng">{{latlng}}</span>: {{message}}</p>
 </template>
 
 
@@ -37,22 +50,5 @@
 </template>
 
 
-<template name="leaderboard">
-  <div class="leaderboard">
-    {{#each players}}
-      {{> player}}
-    {{/each}}
-  </div>
-</template>
 
-
-
-<template name="player">
-  <div class="player">
-    <span class="name">{{name}}</span>
-    <span class="score">{{message}}</span>
-    <span class="lat">{{latlng}}</span>
-    <span class="lastseen">{{lastSeen}}</span>
-  </div>
-</template>
 

@@ -13,7 +13,7 @@ body {
 }
 
 #outer {
-    width: 600px;
+    width: 800px;
     margin: 0 auto;    
 }
 
@@ -37,6 +37,7 @@ body {
     color: #777;
 }
 
+.latlng,
 .player .lng,
 .player .lat { 
 font-size: 0.5em; 
@@ -66,4 +67,10 @@ font-size: 0.5em;
 
 .inc {
   cursor: pointer;
+}
+
+
+
+.todo {
+    float: right;
 }

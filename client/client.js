@@ -11,13 +11,8 @@ var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', s
 var map, mapnik;
 
 
-Template.leaderboard.players = function () {
-    return Players.find({ _id : { $ne : Session.get('player_id') }}, 
-                        { sort: { player_id: 1 }});
-};
-
 Template.number.number = function() {
-    return Players.find({}).count() - 1;
+    return $.unique(Players.find({}).map(function (x) { return x.name; } )).length
 };
 
 Template.status.status = function() {
@@ -26,7 +21,13 @@ Template.status.status = function() {
 };
 
 Template.messages.messages = function() {
-    return Players.find({}, { sort : { lastSeen: 1 }});
+    var p = Players.find({}, { sort : { lastSeen: 1 }});
+    return p.map(function (i) {
+        i.lastSeen = new Date(i.lastSeen);
+        i.lastSeen = i.lastSeen.getHours() + ':' + i.lastSeen.getMinutes();
+        i.latlng = [ i.latlng[0].toFixed(3), i.latlng[1].toFixed(3) ];
+        return i;
+    });
 }
 
 var getUsername = function() {
@@ -42,11 +43,13 @@ var getUsername = function() {
 var updatePlayer = function(s) {
     if (s === undefined) s = $('#input-status')[0].value;
     
-    pid = Players.insert({ message: s, 
-                           name: getUsername(),
-                           latlng: JSON.parse(Session.get('latlng')), 
-                           lastSeen: new Date().getTime()
-                         });
+
+    if (s) 
+        pid = Players.insert({ message: s, 
+                               name: getUsername(),
+                               latlng: JSON.parse(Session.get('latlng')), 
+                               lastSeen: new Date()
+                             });
 }
 
 
