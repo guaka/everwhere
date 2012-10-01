@@ -20,11 +20,12 @@ Template.status.status = function() {
     if (s) return s.message;
 };
 
+
 Template.messages.messages = function() {
     var p = Players.find({}, { sort : { lastSeen: -1 }});
     return p.map(function (i) {
         i.lastSeen = new Date(i.lastSeen);
-        i.lastSeen = i.lastSeen.getHours() + ':' + i.lastSeen.getMinutes();
+        i.lastSeen = zeropad2(i.lastSeen.getHours()) + ':' + zeropad2(i.lastSeen.getMinutes());
         i.latlng = [ i.latlng[0].toFixed(3), i.latlng[1].toFixed(3) ];
         return i;
     });
@@ -75,7 +76,7 @@ Template.status.events({
             $('#input-status').focus();
             $('#input-status').val('');
             // Make sure new chat messages are visible
-            $("#chat").scrollTop(9999999);
+            // $("#chat").scrollTop(9999999);
         }
     }
 });

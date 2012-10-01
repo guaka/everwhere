@@ -10,3 +10,8 @@ random = ->
 randomize = (x) ->
   x + 0.02 * random()
 
+
+
+zeropad2 = (x) ->
+  x = String(x)
+  if x.length == 2 then x else '0' + x
