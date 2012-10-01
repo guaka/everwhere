@@ -1,0 +1,105 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  
+  <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+  <title>Everwhe.re | creating real life connections</title>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16512257-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body>
+  <div class="header-container">
+    <header class="wrapper clearfix">
+      {{> loginButtons}}
+      {{> number}}
+      
+      <h1 class="title">Everwhe.re</h1>
+    </header>
+  </div>
+  
+  <div class="main-container">
+    <div class="main wrapper clearfix">
+      
+      <article>
+        <div id="map"></div>
+        <header>
+        </header>
+        <section>
+          {{> status}}
+          {{> messages}}
+        </section>
+        <footer>
+        </footer>
+      </article>
+      
+      <aside>
+        {{> todo}}
+      </aside>
+      
+    </div> <!-- #main -->
+  </div> <!-- #main-container -->
+  
+  <div class="footer-container">
+    <footer class="wrapper">
+      <h3>about</h3>
+      <p>
+        Everwhe.re bla bla
+      </p>
+    </footer>
+  </div>
+</body>
+
+<template name="todo">
+  <div class="todo">
+    <h3>TODO</h3>
+    <ol>
+      <li>something with markers</li>
+      <li>colors/design</li>
+      <li>only show local messages</li>
+      <li>iframe</li>
+    </ol>
+  </div>
+</template>
+
+
+<template name="messages">
+  <div id="chat">
+    {{#each messages}}
+      {{> message}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="message">
+  <p><span class="lastSeen">{{lastSeen}}</span> {{name}}, <span class="latlng">{{latlng}}</span>: {{message}}</p>
+</template>
+
+
+<template name="number">
+  <div class="number">
+    {{number}} more people in your area
+  </div>
+</template>
+
+<template name="status">
+  say what? <input id="input-status" type="text" value="{{status}}">
+</template>
+
+
+
+
