@@ -22,9 +22,12 @@ Template.number.number = function() {
 
 Template.status.status = function() {
     var s = Players.findOne(Session.get('player_id'));
-    if (s) return s.status;
+    if (s) return s.message;
 };
 
+Template.messages.messages = function() {
+    return Players.find({}, { sort : { lastSeen: 1 }});
+}
 
 var getUsername = function() {
     if (Meteor.user()) {
@@ -37,19 +40,20 @@ var getUsername = function() {
 
 
 var updatePlayer = function(s) {
-    Players.update(Session.get('player_id'), { $set: 
-                                               { status: $('#input-status')[0].value,
-                                                 name: getUsername(),
-                                                 lastSeen: new Date().getTime()
-                                               }});
-}
-
-var insertPlayer = function () {
-    console.log('insertPlayer');
-    pid = Players.insert({ status: 'welcome', 
+    if (s === undefined) s = $('#input-status')[0].value;
+    
+    pid = Players.insert({ message: s, 
+                           name: getUsername(),
                            latlng: JSON.parse(Session.get('latlng')), 
                            lastSeen: new Date().getTime()
                          });
+}
+
+
+
+var insertPlayer = function () {
+    console.log('insertPlayer');
+    updatePlayer('welcome');
     Session.set('player_id', pid);
     $.cookie("player_id", pid);
     return pid;
@@ -62,10 +66,13 @@ Template.status.events({
         console.log(evt.target.value);
         updatePlayer();
     },
-    'keyup #input': function (evt) {
+    'keyup #input-status': function (evt) {
         if (evt.keyCode == 13) {
             updatePlayer();
             $('#input-status').focus();
+            $('#input-status').val('');
+            // Make sure new chat messages are visible
+            $("#chat").scrollTop(9999999);
         }
     }
 });
@@ -126,7 +133,7 @@ Meteor.subscribe('players', function() {
     }
 
     Players.find({}).map(function(val) {
-        console.log(val.player_id + ' ' + Session.get('latlng') + ' ' + val.status);
+        console.log(val.player_id + ' ' + Session.get('latlng') + ' ' + val.message);
         console.log('addMarker');
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.latlng[1], val.latlng[0]).transform(fromProjection, toProjection), icon.clone()));
     });

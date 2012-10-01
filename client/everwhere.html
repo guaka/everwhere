@@ -2,18 +2,28 @@
   <title>Everwhe.re | creating real life connections</title>
 </head>
 
-
-
 <body>
   <div id="map"></div>
   <div id="outer">
     {{> loginButtons}}
     {{> number}}
     {{> status}}
+    {{> messages}}
     {{> leaderboard}}
   </div>
 </body>
 
+<template name="messages">
+  <div id="chat">
+    {{#each messages}}
+      {{> message}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="message">
+  <p>{{name}}: {{message}}</p>
+</template>
 
 
 <template name="number">
@@ -40,7 +50,7 @@
 <template name="player">
   <div class="player">
     <span class="name">{{name}}</span>
-    <span class="score">{{status}}</span>
+    <span class="score">{{message}}</span>
     <span class="lat">{{latlng}}</span>
     <span class="lastseen">{{lastSeen}}</span>
   </div>
