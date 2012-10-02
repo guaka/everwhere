@@ -32,11 +32,14 @@ Template.messages.messages = function() {
 }
 
 var getUsername = function() {
-    if (Meteor.user()) {
-        return Meteor.user().profile.name;
-    } else {
-        return 'unknown';
-    }
+    var u = Meteor.user();
+    if (u) {
+        if (u.profile)
+            return Meteor.user().profile.name;
+        else if (u.emails)
+            return u.emails[0].address
+    } 
+    return 'unknown';
 }
 
 
