@@ -42,22 +42,21 @@ var getUsername = function() {
 
 
 var updatePlayer = function(s) {
-    if (s === undefined) s = $('#input-status')[0].value;
+    if (s === undefined) 
+        s = $('#input-status')[0].value;
     
-
     if (s) 
-        pid = Players.insert({ message: s, 
-                               name: getUsername(),
-                               latlng: JSON.parse(Session.get('latlng')), 
-                               lastSeen: new Date()
-                             });
+        return Players.insert({ message: s, 
+                                name: getUsername(),
+                                latlng: JSON.parse(Session.get('latlng')), 
+                                lastSeen: new Date()
+                              });
 }
 
 
 
 var insertPlayer = function () {
-    console.log('insertPlayer');
-    updatePlayer('welcome');
+    pid = updatePlayer('welcome');
     Session.set('player_id', pid);
     $.cookie("player_id", pid);
     return pid;
@@ -67,7 +66,7 @@ var insertPlayer = function () {
 
 Template.status.events({
     'focusout #input-status': function (evt) {
-        console.log(evt.target.value);
+        // console.log(evt.target.value);
         updatePlayer();
     },
     'keyup #input-status': function (evt) {
@@ -96,8 +95,8 @@ function GetLocation(location) {
 
 
 Meteor.startup(function () {
-    console.log('startup');
-
+    // console.log('startup');
+    
     map = new OpenLayers.Map('map');
     mapnik = new OpenLayers.Layer.OSM();
     map.addLayer(mapnik);
@@ -108,7 +107,7 @@ Meteor.startup(function () {
 
 
 Meteor.subscribe('players', function() {
-    console.log('subscribe players');
+    // console.log('subscribe players');
 
     // Only do something if we have a location
     if (Session.get('latlng') !== undefined) {
@@ -116,16 +115,16 @@ Meteor.subscribe('players', function() {
         var pid;
         // If there's no cookie we have to assume there's nothing in mongo
         if (!$.cookie('player_id')) {
-            console.log('cookieinsert');
+            // console.log('cookieinsert');
             pid = insertPlayer();
         } else {
-            console.log('set session from cookie');
+            // console.log('set session from cookie');
             pid = $.cookie('player_id');
             Session.set('player_id', pid);
             
             // And we can check if the record is still there and or update it
             if (Players.find( pid ).count() == 0) {
-                console.log('otherinsert');
+                // console.log('otherinsert');
                 pid = insertPlayer();
             } else {
                 Players.update(
@@ -137,8 +136,8 @@ Meteor.subscribe('players', function() {
     }
 
     Players.find({}).map(function(val) {
-        console.log(val.player_id + ' ' + Session.get('latlng') + ' ' + val.message);
-        console.log('addMarker');
+        //console.log(val.player_id + ' ' + Session.get('latlng') + ' ' + val.message);
+        //console.log('addMarker');
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.latlng[1], val.latlng[0]).transform(fromProjection, toProjection), icon.clone()));
     });
 });
