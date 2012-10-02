@@ -78,3 +78,13 @@ font-size: 0.5em;
 #login-buttons-logout {
     margin-right: 10px;
 }
+
+
+header div {
+    color: white;
+}
+
+footer a {
+    color: #8ff;
+    text-decoration: none;
+}
