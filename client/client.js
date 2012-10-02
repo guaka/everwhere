@@ -68,10 +68,6 @@ var insertPlayer = function () {
 
 
 Template.status.events({
-    'focusout #input-status': function (evt) {
-        // console.log(evt.target.value);
-        updatePlayer();
-    },
     'keyup #input-status': function (evt) {
         if (evt.keyCode == 13) {
             updatePlayer();
@@ -83,7 +79,12 @@ Template.status.events({
     }
 });
 
-
+Meteor.startup(function () {
+    $(function () {
+        // doesn't work yet?
+        $('#input-status').focus();
+    });
+});
 
 
 
