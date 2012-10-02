@@ -15,3 +15,7 @@ randomize = (x) ->
 zeropad2 = (x) ->
   x = String(x)
   if x.length == 2 then x else '0' + x
+
+
+
+id = (x) -> x
