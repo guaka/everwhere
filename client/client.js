@@ -1,18 +1,10 @@
 
 Players = new Meteor.Collection("players");
 
-var markers = new OpenLayers.Layer.Markers( "Markers" );
-var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
-var zoom = 12;
-var size = new OpenLayers.Size(21, 25);
-var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
-var map, mapnik;
 
 
 Template.number.number = function() {
-    return $.unique(Players.find({}).map(function (x) { return x.name; } )).length
+    return _.uniq(Players.find({}).map(function (x) { return x.name; } )).length
 };
 
 Template.status.status = function() {
@@ -88,28 +80,6 @@ Meteor.startup(function () {
 
 
 
-function GetLocation(location) {
-    var lng = randomize(location.coords.longitude);
-    var lat = randomize(location.coords.latitude);
-    Session.set('latlng', JSON.stringify([ lat, lng ]));
-    var position = new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection);
-    map.setCenter(position, zoom);
-    map.addLayer(markers);
-};
-
-
-Meteor.startup(function () {
-    // console.log('startup');
-    
-    map = new OpenLayers.Map('map');
-    mapnik = new OpenLayers.Layer.OSM();
-    map.addLayer(mapnik);
-    navigator.geolocation.getCurrentPosition(GetLocation);
-});
-
-
-
-
 Meteor.subscribe('players', function() {
     // console.log('subscribe players');
 
@@ -139,12 +109,30 @@ Meteor.subscribe('players', function() {
         }
     }
 
-    Players.find({}).map(function(val) {
-        //console.log(val.player_id + ' ' + Session.get('latlng') + ' ' + val.message);
+    putMarkers(lastPositions(Players.find({}).map(id)));
+});
+
+
+var lastPositions = function(p) {
+    var names = _.pluck(p, 'name')
+    names = _.uniq(names);
+    
+    return _.map(names, function (n) {
+        // take the last entry for each name
+        return _.last(_.filter(p, function (x) { return x.name == n }));
+    });
+}
+
+
+var putMarkers = function(p) {
+    p.map(function(val) {
+        console.log(val.name + ' ' + Session.get('latlng') + ' ' + val.message);
         //console.log('addMarker');
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.latlng[1], val.latlng[0]).transform(fromProjection, toProjection), icon.clone()));
     });
-});
+}
+
+
 
 
 
