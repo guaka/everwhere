@@ -4,7 +4,7 @@ body {
 
 #chat {
   height: 366px;
-  width: 440px;
+  width: 100%;
   overflow: scroll;
   padding: 0px 10px 10px 10px;
   border: 1px #ccc solid;
