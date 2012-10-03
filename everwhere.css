@@ -85,3 +85,7 @@ footer a {
     color: #8ff;
     text-decoration: none;
 }
+
+.popup-name { 
+    font-size: 10px;
+}
