@@ -126,13 +126,27 @@ var lastPositions = function(p) {
 
 var putMarkers = function(p) {
     p.map(function(val) {
-        console.log(val.name + ' ' + Session.get('latlng') + ' ' + val.message);
-        //console.log('addMarker');
-        markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(val.latlng[1], val.latlng[0]).transform(fromProjection, toProjection), icon.clone()));
+        var lonLat = new OpenLayers.LonLat(val.latlng[1], val.latlng[0]).transform(fromProjection, toProjection);
+        var marker = new OpenLayers.Marker(lonLat, icon.clone());
+        var feature = new OpenLayers.Feature(markers, lonLat);
+        feature.closeBox = true;
+        feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(100, 20) } );
+        feature.data.popupContentHTML = val.message;
+        feature.data.overflow = "hidden";
+
+        var markerClick = function(evt) {
+            if (this.popup == null) {
+                this.popup = this.createPopup(this.closeBox);
+                map.addPopup(this.popup);
+                this.popup.show();
+            } else {
+                this.popup.toggle();
+            }
+            OpenLayers.Event.stop(evt);
+        };
+        marker.events.register("mousedown", feature, markerClick);
+
+        marker.feature = feature
+        markers.addMarker(marker);
     });
 }
-
-
-
-
-
