@@ -5,10 +5,10 @@
 
 coffeescript
 accounts-ui
-accounts-google
 accounts-facebook
-accounts-password
 insecure
 underscore
 backbone
 spiderable
+jquery
+http
