@@ -1,5 +1,6 @@
 
-$ = __meteor_bootstrap__.require('jquery');
+# crashes on deploy!
+#  $ = __meteor_bootstrap__.require('jquery');
 
 
 Meteor.startup ->
