@@ -4,8 +4,8 @@ $ = __meteor_bootstrap__.require('jquery');
 
 Meteor.startup ->
   # uid = '57SQUHK' #erga
-  uid = '5F4MCK' #guaka
-  cs_friends uid
+  # uid = '5F4MCK' #guaka
+  # cs_friends uid
 
   Meteor.publish "connections", ->
     Connections.find { from: uid }
