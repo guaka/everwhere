@@ -92,3 +92,19 @@ footer a {
 
 
 h1.title { color: black; }
+
+body {
+  font-family: "Tahoma";
+}
+
+#chat {
+  height: 366px;
+  width: 100%;
+  overflow: scroll;
+  padding: 0px 10px 10px 10px;
+  border: 1px #ccc solid;
+}
+
+#chat p {
+    margin: 0;
+}
