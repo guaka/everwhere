@@ -2,7 +2,6 @@
 Players = new Meteor.Collection("players");
 
 
-
 Template.number.number = function() {
     return _.uniq(Players.find({}).map(function (x) { return x.name; } )).length
 };
@@ -18,7 +17,7 @@ Template.messages.messages = function() {
     return p.map(function (i) {
         i.lastSeen = new Date(i.lastSeen);
         i.lastSeen = zeropad2(i.lastSeen.getHours()) + ':' + zeropad2(i.lastSeen.getMinutes());
-        i.latlng = [ i.latlng[0].toFixed(3), i.latlng[1].toFixed(3) ];
+        i.latlng = [ i.latlng[0].toFixed(2), i.latlng[1].toFixed(2) ];
         return i;
     });
 }
@@ -75,7 +74,12 @@ Meteor.startup(function () {
     $(function () {
         // doesn't work yet?
         $('#input-status').focus();
+        
+        if (window != top) {
+            window.scrollTo(0, 0);
+        }
     });
+
 });
 
 
