@@ -3,7 +3,8 @@ $ = __meteor_bootstrap__.require('jquery');
 
 
 Meteor.startup ->
-  uid = '57SQUHK'
+  # uid = '57SQUHK' #erga
+  uid = '5F4MCK' #guaka
   cs_friends uid
 
   Meteor.publish "connections", ->

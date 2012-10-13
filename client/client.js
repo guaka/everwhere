@@ -42,7 +42,7 @@ var updatePlayer = function(s) {
     if (s) 
         return Players.insert({ message: s, 
                                 name: getUsername(),
-                                latlng: JSON.parse(Session.get('latlng')), 
+                                latlng: Session.get('latlng'), 
                                 lastSeen: new Date()
                               });
 }
@@ -107,7 +107,7 @@ Meteor.subscribe('players', function() {
             } else {
                 Players.update(
                     pid,
-                    { $set: { latlng: JSON.parse(Session.get('latlng')) } }
+                    { $set: { latlng: Session.get('latlng') } }
                 );
             }
         }
