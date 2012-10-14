@@ -3,6 +3,8 @@ Geocache = new Meteor.Collection("geocache")
 Geoqueue = new Meteor.Collection("geoqueue")
 
 
+parseJSON = JSON.parse
+
 dbggeo = (msg) ->
   # console.log msg
 
@@ -54,7 +56,7 @@ class GeoGoogle extends Geocoder
   query: (name) ->
     super name
     httpcache "http://maps.google.com/maps/geo?q=" + encodeURIComponent(name), (content) ->
-      obj = $.parseJSON content
+      obj = parseJSON content
       if obj and obj.Placemark
         dbggeo 'Googlegeo: ' + obj
         coor = obj.Placemark[0].Point.coordinates
@@ -66,7 +68,7 @@ class GeoNominatim extends Geocoder
   query: (name) ->
     super name
     httpcache 'http://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(name) + '&format=json&limit=1', (content) ->
-      obj = $.parseJSON content
+      obj = parseJSON content
       fine = false
       if obj
         obj0 = obj[0]

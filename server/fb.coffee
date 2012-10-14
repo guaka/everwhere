@@ -23,7 +23,18 @@ fql_cache = (query, callback) ->
       console.log "inserting into FqlCache"
       callback data
 
+
+
 fb_fetch = (auth_fb) ->
   FB.setAccessToken auth_fb.accessToken
   fql_cache "SELECT uid, name, hometown_location, current_location FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=" + auth_fb.id + ")", (data) ->
+    _.map data, (e) ->
+      if e.hometown_location
+        geo = geocode e.hometown_location.name
+        if geo
+          e.hometown_location.latlng = geo.latlng
+          console.log e.hometown_location
+        else
+          e.hometown_location.latlng = [ null, null ]
+    FbConnections.remove { uid: auth_fb.id }
     FbConnections.insert { uid: auth_fb.id, data: data }
