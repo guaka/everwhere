@@ -9,7 +9,8 @@ Meteor.startup ->
   # cs_friends uid
 
   Meteor.publish "connections", ->
-    Connections.find { from: uid }
+    if uid?
+      Connections.find { from: uid }
 
 
 cs_friends = (uid) ->

@@ -1,5 +1,7 @@
-# FB = require("fb")
-# geocoder = require("geocoder")
+
+
+
+
 fb_fetch = (res, req, db) ->
   auth_fb = req.session.auth.facebook
   console.log "FB auth: " + req.session.auth.facebook
@@ -12,12 +14,12 @@ fb_fetch = (res, req, db) ->
       i = 0
 
       while i < data.length
-        
+
         # data[i].uid = parseInt(data[i].uid);
         if data[i].current_location
           data[i].location_name = data[i].current_location.name
         else data[i].location_name = data[i].hometown_location.name  if data[i].hometown_location
-        
+
         #delete data[i].current_location;
         #delete data[i].hometown_location;
         col.update
@@ -29,13 +31,13 @@ fb_fetch = (res, req, db) ->
 
         i++
 
-    
+
     # multi and upsert don't go hand in hand
     db.collection "fb_friends", (err, col) ->
       i = 0
 
       while i < data.length
-        
+
         #console.log(data[i]);
         data[i].uid = parseInt(data[i].uid)
         col.update
@@ -50,7 +52,3 @@ fb_fetch = (res, req, db) ->
           safe: false
 
         i++
-
-
-
-
