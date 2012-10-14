@@ -45,3 +45,12 @@ Meteor.startup ->
       # marker = L.marker(c.latlng, {}).addTo(map)
       link = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
       marker.bindPopup(link);
+
+  Meteor.subscribe "fbconnections", ->
+    console.log 'subscribe?!'
+    console.log FbConnections
+    f = FbConnections.findOne({})
+    _.map f.data, (c) ->
+      if c.hometown_location?
+        console.log c.hometown_location.name
+      # console.log c.current_location.name
