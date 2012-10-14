@@ -28,9 +28,17 @@ fql_cache = (query, callback) ->
 fb_fetch = (auth_fb) ->
   FB.setAccessToken auth_fb.accessToken
   fql_cache "SELECT uid, name, hometown_location, current_location FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=" + auth_fb.id + ")", (data) ->
-    _.map data, (e) ->
-      if e.hometown_location
-        geo = geocode e.hometown_location.name
-        e.hometown_location.latlng = if geo then geo.latlng else null
-    FbConnections.remove { uid: auth_fb.id }
-    FbConnections.insert { uid: auth_fb.id, data: data }
+    Fiber( ->
+      _.map data, (e) ->
+        if e.hometown_location
+          geo = geocode e.hometown_location.name
+          console.log geo
+          e.hometown_location.latlng = if geo then geo.latlng else null
+        else if e.current_location
+          geo = geocode e.current_location.name
+          console.log geo
+          e.current_location.latlng = if geo then geo.latlng else null
+
+      FbConnections.remove { uid: auth_fb.id }
+      FbConnections.insert { uid: auth_fb.id, data: data }
+    ).run()
