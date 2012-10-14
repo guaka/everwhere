@@ -1,4 +1,4 @@
-#map { height: 320px; background-color:pink; }
+#map { height: 420px; background-color:pink; }
 
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -108,3 +108,5 @@ body {
 #chat p {
     margin: 0;
 }
+
+#input-status { width: 100% }
