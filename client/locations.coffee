@@ -27,6 +27,17 @@ csIcon = (c) ->
         popupAnchor: [-3, -76] # point from which the popup should open relative to the iconAnchor
       )
 
+fbIcon = (c) ->
+      L.icon(
+        iconUrl: 'https://graph.facebook.com/' + c.uid + '/picture'
+        shadowUrl: "leaf-shadow.png"
+        iconSize: [ 50, 50 ] # size of the icon
+        iconAnchor: [ 20, 20 ] # point of the icon which will correspond to marker's location
+        shadowAnchor: [4, 38] # the same for the shadow
+        popupAnchor: [-3, -76] # point from which the popup should open relative to the iconAnchor
+      )
+
+
 
 Meteor.startup ->
   map = L.map("map").setView([51.505, -0.09], 2) # London
@@ -37,20 +48,23 @@ Meteor.startup ->
     maxZoom: 18
   ).addTo map
 
-  Meteor.subscribe 'connections', ->
-    console.log Connections
+  Meteor.subscribe 'connections', ->  # CS connections
+    # console.log Connections
     Connections.find({}).map (c) ->
-      console.log c.img
-      marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo(map)
-      # marker = L.marker(c.latlng, {}).addTo(map)
-      link = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
-      marker.bindPopup(link);
+      # console.log c.img
+      marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo map
+      # marker = L.marker(c.latlng, {}).addTo map
+      text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
+      marker.bindPopup text
 
   Meteor.subscribe "fbconnections", ->
     console.log 'subscribe?!'
-    console.log FbConnections
     f = FbConnections.findOne({})
     _.map f.data, (c) ->
       if c.hometown_location?
-        console.log c.hometown_location.name
-      # console.log c.current_location.name
+        if c.hometown_location.latlng?
+          marker = L.marker(c.hometown_location.latlng, { icon: fbIcon(c) }).addTo map
+          console.log c.name, c.uid
+          text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a>'
+          marker.bindPopup text
+

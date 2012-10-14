@@ -31,10 +31,6 @@ fb_fetch = (auth_fb) ->
     _.map data, (e) ->
       if e.hometown_location
         geo = geocode e.hometown_location.name
-        if geo
-          e.hometown_location.latlng = geo.latlng
-          console.log e.hometown_location
-        else
-          e.hometown_location.latlng = [ null, null ]
+        e.hometown_location.latlng = if geo then geo.latlng else null
     FbConnections.remove { uid: auth_fb.id }
     FbConnections.insert { uid: auth_fb.id, data: data }
