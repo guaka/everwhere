@@ -13,7 +13,7 @@ Meteor.startup ->
 
 fql_cache = (query, callback) ->
   c = FqlCache.findOne query: query
-  if c
+  if c and !c.data.error_code?
     callback c.data
   else
     FB.api { method: "fql.query", query: query }, (data) ->
