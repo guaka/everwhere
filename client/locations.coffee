@@ -4,7 +4,7 @@ map = null
 
 putMarkers = (p) ->
   p.map (val) ->
-    console.log val.latlng, val.name, val.message
+    # console.log val.latlng, val.name, val.message
     marker = L.marker(val.latlng, {}).addTo(map)
     marker.bindPopup(val.name + ': ' + val.message)
 
@@ -13,27 +13,27 @@ setLocation = (location) ->
   lng = location.coords.longitude
   lat = location.coords.latitude
   Session.set('latlng', [ lat, lng ])
-  map.setView([ lat, lng ], 9)
+  map.setView([ lat, lng ], 7)
 
 
 csIcon = (c) ->
       L.icon(
         iconUrl: c.img
-        shadowUrl: "leaf-shadow.png"
+        # shadowUrl: "leaf-shadow.png"
         iconSize: [ c.imgx, c.imgy ] # size of the icon
         # shadowSize: [50, 64] # size of the shadow
         iconAnchor: [ c.imgx * .5, c.imgy ] # point of the icon which will correspond to marker's location
-        shadowAnchor: [4, 38] # the same for the shadow
+        # shadowAnchor: [4, 38] # the same for the shadow
         popupAnchor: [-3, -76] # point from which the popup should open relative to the iconAnchor
       )
 
 fbIcon = (c) ->
       L.icon(
         iconUrl: 'https://graph.facebook.com/' + c.uid + '/picture'
-        shadowUrl: "leaf-shadow.png"
+        # shadowUrl: "leaf-shadow.png"
         iconSize: [ 50, 50 ] # size of the icon
         iconAnchor: [ 20, 20 ] # point of the icon which will correspond to marker's location
-        shadowAnchor: [4, 38] # the same for the shadow
+        # shadowAnchor: [4, 38] # the same for the shadow
         popupAnchor: [-3, -76] # point from which the popup should open relative to the iconAnchor
       )
 
@@ -58,13 +58,21 @@ Meteor.startup ->
       marker.bindPopup text
 
   Meteor.subscribe "fbconnections", ->
-    console.log 'subscribe?!'
+    # console.log 'subscribe?!'
     f = FbConnections.findOne({})
-    _.map f.data, (c) ->
-      if c.hometown_location?
-        if c.hometown_location.latlng?
-          marker = L.marker(c.hometown_location.latlng, { icon: fbIcon(c) }).addTo map
-          console.log c.name, c.uid
-          text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a>'
-          marker.bindPopup text
+    if f
+      _.map f.data, (c) ->
+        if c.hometown_location?
+          if c.hometown_location.latlng?
+            marker = L.marker(c.hometown_location.latlng, { icon: fbIcon(c) }).addTo map
+            # console.log c.name, c.uid
+            text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a>'
+            marker.bindPopup text
+
+        if c.current_location?
+          if c.current_location.latlng?
+            marker = L.marker(c.current_location.latlng, { icon: fbIcon(c) }).addTo map
+            # console.log c.name, c.uid
+            text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a>'
+            marker.bindPopup text
 
