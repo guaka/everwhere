@@ -1,12 +1,12 @@
-FB = __meteor_bootstrap__.require("fb")
+
 
 
 if Meteor.is_server
   Meteor.publish "accessToken", ->
     user = Meteor.users.findOne(this.userId)
     fb_auth = user.services.facebook
-    fb_fetch fb_auth
-    Meteor.users.find(this.UserId).fetch()
+    # fb_fetch fb_auth
+    # Meteor.users.find(this.UserId).fetch()
 
 
 
