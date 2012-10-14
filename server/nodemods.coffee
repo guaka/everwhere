@@ -1,21 +1,30 @@
 
-require = __meteor_bootstrap__.require
-path = require("path")
-fs = require('fs')
-FB = null
+meteorNpm = do() ->
+  require = __meteor_bootstrap__.require
 
-fbPath = 'node_modules/fb'
+  path    = require 'path'
+  fs      = require 'fs'
 
-base = path.resolve('.');
-if base == '/'
-  base = path.dirname(global.require.main.filename);
+  base = path.resolve '.'
+  if base is '/'
+    base = path.dirname global.require.main.filename
 
-publicPath = path.resolve(base+'/public/'+fbPath);
-staticPath = path.resolve(base+'/static/'+fbPath);
+  meteorNpm =
+    # requires npm modules placed in `public/node_modules`
+    require: (moduleName) ->
+      modulePath = 'node_modules/' + moduleName
 
-if (path.existsSync(publicPath))
-  FB = require(publicPath)
-else if (path.existsSync(staticPath))
-  FB = require(staticPath)
-else
-  console.log('node_modules not found')
+      publicPath = path.resolve(base + '/public/' + modulePath)
+      staticPath = path.resolve(base + '/bundle/static/' + modulePath)
+
+      if path.existsSync(publicPath)
+        module = require publicPath
+      else if path.existsSync(staticPath)
+        module = require staticPath
+      else
+        module = null
+
+      return module
+
+
+FB = meteorNpm.require "fb"
