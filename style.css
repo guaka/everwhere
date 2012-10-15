@@ -138,10 +138,15 @@ body {
 }
 
 .footer-container a {
-    color: #8ff;
+    color: #c77;
     text-decoration: none;
+    font-weight: bold;
 }
 
 .header-container {
     padding: 4px 14px;
+}
+
+h2 {
+    padding-top: 15px;
 }
