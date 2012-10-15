@@ -47,7 +47,6 @@
         <header>
         </header>
         <section>
-          {{> status}}
           {{> messages}}
         </section>
         <footer>
@@ -85,9 +84,12 @@
 
 <template name="messages">
   <div id="chat">
+    {{> status}}
+    <div id="chat-messages">
     {{#each messages}}
       {{> message}}
     {{/each}}
+    </div>
   </div>
 </template>
 
@@ -108,7 +110,8 @@
 </template>
 
 <template name="status">
-  chat with people <input id="input-status" type="text" value="{{status}}">
+  <label for="input-status">chat</label>
+  <input id="input-status" type="text" value="{{status}}">
 </template>
 
 

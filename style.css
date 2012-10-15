@@ -1,4 +1,4 @@
-#map { height: 420px; background-color:pink; }
+#map { height: 490px; background-color:pink; }
 
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -97,9 +97,27 @@ body {
   font-family: "Tahoma";
 }
 
+#chat label {
+  margin-left: 12px;
+  display: inline;
+  font-size: 22px;
+  font-weight: bold;
+}
+
 #chat {
   height: 366px;
-  width: 100%;
+  width: 366px;
+  position: absolute;
+  top: 120px;
+  right: 50px;
+  background: rgba(146, 158, 177, 0.6);
+  border-radius: 15px;
+}
+
+#chat-messages {
+  background: rgba(146, 158, 177, 0.6);
+  width: 342px;
+  height: 100%;
   overflow: scroll;
   padding: 0px 10px 10px 10px;
   border: 1px #ccc solid;
@@ -109,4 +127,8 @@ body {
     margin: 0;
 }
 
-#input-status { width: 100% }
+#input-status { 
+    width: 260px; 
+    float: right;
+    margin-right: 15px;
+}

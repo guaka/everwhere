@@ -64,10 +64,6 @@ body {
     font: 16px/26px Helvetica, Helvetica Neue, Arial;
 }
 
-.wrapper {
-    width: 90%;
-    margin: 0 5%;
-}
 
 /* ===================
     ALL: Orange Theme
@@ -128,7 +124,7 @@ nav a:hover {
    ============== */
 
 .main {
-    padding: 30px 0;
+    padding: 0 0;
 }
 
 .main article h1 {
@@ -260,8 +256,16 @@ h1 {
    =============== */
 
     .wrapper {
-        width: 1026px; /* 1140px - 10% for margins */
+        /* width: 1026px; /* 1140px - 10% for margins */
+        width: 100%
         margin: 0 auto;
+    }
+    
+    .wrapper article {
+        width: 1026px; /* 1140px - 10% for margins */
+
+        width: 90%;
+        margin: 0 5%;
     }
 }
 
