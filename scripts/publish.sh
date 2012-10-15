@@ -1,2 +1,3 @@
 git push
-meteor deploy --debug everwhe.re
+meteor deploy everwhe.re
+meteor deploy --debug everwhere.meteor.com
