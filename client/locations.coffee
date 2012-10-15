@@ -13,22 +13,17 @@ putMarkers = (p) ->
 csIcon = (c) ->
       L.icon(
         iconUrl: c.img
-        # shadowUrl: "leaf-shadow.png"
         iconSize: [ c.imgx, c.imgy ] # size of the icon
-        # shadowSize: [50, 64] # size of the shadow
         iconAnchor: [ c.imgx * .5, c.imgy ] # point of the icon which will correspond to marker's location
-        # shadowAnchor: [4, 38] # the same for the shadow
         popupAnchor: [-3, -76] # point from which the popup should open relative to the iconAnchor
       )
 
 fbIcon = (c) ->
       L.icon(
         iconUrl: 'https://graph.facebook.com/' + c.uid + '/picture'
-        # shadowUrl: "leaf-shadow.png"
         iconSize: [ 50, 50 ] # size of the icon
-        iconAnchor: [ 20, 20 ] # point of the icon which will correspond to marker's location
-        # shadowAnchor: [4, 38] # the same for the shadow
-        popupAnchor: [-3, -76] # point from which the popup should open relative to the iconAnchor
+        iconAnchor: [ 25, 25 ] # point of the icon which will correspond to marker's location
+        popupAnchor: [ 0, -25 ] # point from which the popup should open relative to the iconAnchor
       )
 
 
@@ -68,13 +63,15 @@ Meteor.startup ->
     l = c[description]
     if l? and l.latlng?
       marker = L.marker(l.latlng, { icon: fbIcon(c) }).addTo map
-      text = description.replace('_location', '') +
-             ' <a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a>'
+      text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a><br />' +
+              description.replace('_location', '')
       marker.bindPopup text
 
   Meteor.subscribe "fbconnections", ->
     f = FbConnections.findOne({})
     if f
       _.map f.data, (c) ->
-        add_fb_location c, 'hometown_location'
         add_fb_location c, 'current_location'
+        if c.hometown_location? and c.current_location and
+           c.hometown_location.latlng != c.current_location.latlng
+          add_fb_location c, 'hometown_location'
