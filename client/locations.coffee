@@ -9,12 +9,6 @@ putMarkers = (p) ->
     marker.bindPopup(val.name + ': ' + val.message)
 
 
-setLocation = (location) ->
-  lng = location.coords.longitude
-  lat = location.coords.latitude
-  Session.set('latlng', [ lat, lng ])
-  map.setView([ lat, lng ], 7)
-
 
 csIcon = (c) ->
       L.icon(
@@ -38,9 +32,21 @@ fbIcon = (c) ->
       )
 
 
+setLocation = (location) ->
+  lng = location.coords.longitude
+  lat = location.coords.latitude
+  Session.set('latlng', [ lat, lng ])
+  map.setView([ lat, lng ], 7)
+
+
 
 Meteor.startup ->
-  map = L.map("map").setView([51.505, -0.09], 2) # London
+  map = L.map("map",
+    zoom: 4
+    center: [51.5, -0.09]
+    minZoom: 2
+    maxZoom: 12
+  )
   navigator.geolocation.getCurrentPosition(setLocation)
 
   L.tileLayer("http://{s}.tile.cloudmade.com/9c9b2bf2a30e47bcab503fa46901de36/997/256/{z}/{x}/{y}.png",
