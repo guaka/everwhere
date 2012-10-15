@@ -1,12 +1,16 @@
+
 Players = new Meteor.Collection("players")
+
 Template.number.number = ->
   _.uniq(Players.find({}).map((x) ->
     x.name
   )).length
 
+
 Template.status.status = ->
   s = Players.findOne(Session.get("player_id"))
   s.message  if s
+
 
 Template.messages.messages = ->
   p = Players.find({},
@@ -26,7 +30,7 @@ getUsername = ->
     if u.profile
       return Meteor.user().profile.name
     else return u.emails[0].address  if u.emails
-  "unknown"
+  "someone"
 
 
 updatePlayer = (s) ->
@@ -45,6 +49,7 @@ insertPlayer = ->
   $.cookie "player_id", pid
   pid
 
+
 Template.status.events "keyup #input-status": (evt) ->
   if evt.keyCode is 13
     updatePlayer()
@@ -52,19 +57,14 @@ Template.status.events "keyup #input-status": (evt) ->
     $("#input-status").val ""
 
 
-
 Meteor.startup ->
   $ ->
-
-    # doesn't work yet?
-    $("#input-status").focus()
+    $("#input-status").focus()  # doesn't work
     window.scrollTo 0, 0  unless window is top
 
 
 Meteor.subscribe "players", ->
-
   # console.log('subscribe players');
-
   # Only do something if we have a location
   if Session.get("latlng") isnt `undefined`
     pid = undefined
