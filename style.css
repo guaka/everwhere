@@ -1,4 +1,4 @@
-#map { height: 490px; background-color:pink; }
+#map { height: 590px; background-color:pink; }
 
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -81,17 +81,13 @@ font-size: 0.5em;
 
 
 
-footer a {
-    color: #8ff;
-    text-decoration: none;
-}
 
 .popup-name { 
     font-size: 10px;
 }
 
 
-h1.title { color: black; }
+h1.title { color: black; padding-right: 20px; }
 
 body {
   font-family: "Tahoma";
@@ -108,14 +104,14 @@ body {
   height: 366px;
   width: 366px;
   position: absolute;
-  top: 120px;
+  top: 130px;
   right: 50px;
-  background: rgba(146, 158, 177, 0.6);
+  background: rgba(166, 178, 197, 0.6);
   border-radius: 15px;
 }
 
 #chat-messages {
-  background: rgba(146, 158, 177, 0.6);
+  background: rgba(166, 178, 197, 0.6);
   width: 342px;
   height: 100%;
   overflow: scroll;
@@ -131,4 +127,21 @@ body {
     width: 260px; 
     float: right;
     margin-right: 15px;
+}
+
+.footer-container {
+    padding: 0 50px 50px;
+}
+
+#last-commit {
+    float: right;
+}
+
+.footer-container a {
+    color: #8ff;
+    text-decoration: none;
+}
+
+.header-container {
+    padding: 4px 14px;
 }
