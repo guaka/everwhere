@@ -44,7 +44,7 @@ updatePlayer = (s) ->
 
 
 insertPlayer = ->
-  pid = updatePlayer("welcome")
+  pid = updatePlayer() # was "welcome"
   Session.set "player_id", pid
   $.cookie "player_id", pid
   pid
