@@ -57,22 +57,18 @@ Meteor.startup ->
       text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
       marker.bindPopup text
 
+
+  add_fb_location = (c, description) ->
+    l = c[description]
+    if l? and l.latlng?
+      marker = L.marker(l.latlng, { icon: fbIcon(c) }).addTo map
+      text = description.replace('_location', '') +
+             ' <a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a>'
+      marker.bindPopup text
+
   Meteor.subscribe "fbconnections", ->
-    # console.log 'subscribe?!'
     f = FbConnections.findOne({})
     if f
       _.map f.data, (c) ->
-        if c.hometown_location?
-          if c.hometown_location.latlng?
-            marker = L.marker(c.hometown_location.latlng, { icon: fbIcon(c) }).addTo map
-            # console.log c.name, c.uid
-            text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a>'
-            marker.bindPopup text
-
-        if c.current_location?
-          if c.current_location.latlng?
-            marker = L.marker(c.current_location.latlng, { icon: fbIcon(c) }).addTo map
-            # console.log c.name, c.uid
-            text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a>'
-            marker.bindPopup text
-
+        add_fb_location c, 'hometown_location'
+        add_fb_location c, 'current_location'
