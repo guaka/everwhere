@@ -13,6 +13,7 @@ Meteor.startup ->
 
 fql_cache = (query, callback) ->
   c = FqlCache.findOne query: query
+  console.log c
   if c and !c.data.error_code?
     callback c.data
   else
