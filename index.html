@@ -25,6 +25,12 @@
 
   <div class="header-container">
     <header class="wrapper clearfix">
+      <div style="float:right">
+        Log in with Facebook to see your FB friends on a map.<br />
+        This is a work in progres. You might have to refresh once or twice.<br />
+        <a href="http://piratepad.net/everwhere">todo / faq / wiki</a>
+      </div>
+
       {{loginButtons}}
       {{> number}}
       
@@ -61,6 +67,7 @@
       <p>
         everwhe.re is being built by <a href="http://guaka.org/">guaka</a>, inspired by <a href="https://github.com/citizenlogistics/ceml">groundcrew</a>, <a href="http://www.triphopping.com/">triphopping</a>, <a href="http://www.benkler.org/Benkler_Wealth_Of_Networks.pdf">benkler</a> etc etc.
         It is based on <a href="http://meteor.com/">meteor</a>.
+        <a href="http://piratepad.net/everwhere">todo / faq / wiki</a>
       </p>
     </footer>
   </div>
@@ -94,12 +101,12 @@
 
 <template name="number">
   <div class="number">
-    {{number}} people in your area
+    {{number}} people online now (later: in your area)
   </div>
 </template>
 
 <template name="status">
-  say what? <input id="input-status" type="text" value="{{status}}">
+  chat with people (later: around you) <input id="input-status" type="text" value="{{status}}">
 </template>
 
 

@@ -18,9 +18,9 @@ fql_cache = (query, callback) ->
   else
     FB.api { method: "fql.query", query: query }, (data) ->
       Fiber( ->
+        console.log "inserting into FqlCache"
         FqlCache.insert { query: query, data: data }
       ).run()
-      console.log "inserting into FqlCache"
       callback data
 
 
@@ -32,11 +32,11 @@ fb_fetch = (auth_fb) ->
       _.map data, (e) ->
         if e.hometown_location
           geo = geocode e.hometown_location.name
-          console.log geo
+          #console.log geo
           e.hometown_location.latlng = if geo then geo.latlng else null
         else if e.current_location
           geo = geocode e.current_location.name
-          console.log geo
+          #console.log geo
           e.current_location.latlng = if geo then geo.latlng else null
 
       FbConnections.remove { uid: auth_fb.id }

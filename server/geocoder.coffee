@@ -87,7 +87,7 @@ class GeoNames extends Geocoder
   query: (name) ->
     super name
     content = httpcache (@url(name))
-    obj = $.parseJSON content
+    obj = parseJSON content
     if obj
       obj = obj.geonames[0]
       loc = { names: _.uniq([ name, obj.name ]), latlng: [ obj.lat, obj.lng ] }
