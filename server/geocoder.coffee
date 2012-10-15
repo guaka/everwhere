@@ -12,12 +12,11 @@ dbggeo = (msg) ->
 geostatus = ->
   console.log "\nGeoqueue length " + Geoqueue.find({}).count() + "\nGeocache: " + Geocache.find({}).count()
 
-if Meteor.is_server
-  Meteor.startup ->
-    console.log "STARTING UP: "
-    geostatus()
-    geocache_clean()
-    Meteor.setInterval processq, 5000
+
+Meteor.startup ->
+  geostatus()
+  geocache_clean()
+  Meteor.setInterval processq, 5000
 
 
 geocode = (loc, callback) ->
