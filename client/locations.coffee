@@ -1,3 +1,6 @@
+#
+# (c) 2012 Kasper Souren
+#
 
 # global scope for map
 map = null

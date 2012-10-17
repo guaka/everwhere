@@ -1,3 +1,11 @@
+#
+# (c) 2012 Kasper Souren
+#
+
+# httpcache is a http cacher using a queue, for Meteor that deals with
+# callbacks
+
+
 HttpCache = new Meteor.Collection('httpcache')
 
 httpqueue = []
@@ -7,7 +15,8 @@ httpdbg = (msg) ->
 
 if Meteor.is_server
   Meteor.startup ->
-    Meteor.setInterval http_processq, 1000
+    # Take one request per 1234 ms
+    Meteor.setInterval http_processq, 1234
 
 
 httpcache = (url, callback) ->
@@ -21,9 +30,7 @@ httpcache = (url, callback) ->
 http_processq = ->
   if httpqueue.length > 0
     el = httpqueue.pop()
-    httpdbg 'ELEMENT'
-    httpdbg el
-    httpdbg httpqueue
+    httpdbg 'Popped ', el, ' from ', httpqueue
     url = el.url
     callback = el.callback
     obj = HttpCache.findOne({ url: url })
@@ -33,7 +40,7 @@ http_processq = ->
     else
       httpdbg 'Fetching ' + url
       Meteor.http.get url, (err, res) ->
-        # httpdbg res
+        httpdbg res
         if res? and res.content?
           callback res.content if callback
           httpdbg 'Storing ' + url + ' in cache'

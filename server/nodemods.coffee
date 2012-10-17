@@ -1,3 +1,8 @@
+#
+# (c) 2012 Kasper Souren
+#
+
+# TODO: find less hacky solution
 
 meteorNpm = do() ->
   require = __meteor_bootstrap__.require

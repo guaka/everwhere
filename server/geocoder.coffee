@@ -1,3 +1,6 @@
+#
+# (c) 2012 Kasper Souren
+#
 
 Geocache = new Meteor.Collection("geocache")
 Geoqueue = new Meteor.Collection("geoqueue")

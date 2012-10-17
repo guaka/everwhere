@@ -1,3 +1,8 @@
+#
+# (c) 2012 Kasper Souren
+#
+
+# TODO: rename names of vars and such into chat nomenclature
 
 Players = new Meteor.Collection("players")
 
@@ -17,11 +22,12 @@ Template.messages.messages = ->
     sort:
       lastSeen: -1
   )
-  p.map (i) ->
-    i.lastSeen = new Date(i.lastSeen)
-    i.lastSeen = zeropad2(i.lastSeen.getHours()) + ":" + zeropad2(i.lastSeen.getMinutes())
-    i.latlng = [i.latlng[0].toFixed(2), i.latlng[1].toFixed(2)]
-    i
+  if p
+    p.map (i) ->
+      i.lastSeen = new Date(i.lastSeen)
+      i.lastSeen = zeropad2(i.lastSeen.getHours()) + ":" + zeropad2(i.lastSeen.getMinutes())
+      i.latlng = [i.latlng[0].toFixed(2), i.latlng[1].toFixed(2)]
+      i
 
 
 getUsername = ->

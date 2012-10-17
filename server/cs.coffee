@@ -1,6 +1,17 @@
+#
+# (c) 2012 Kasper Souren
+#
 
-# crashes on deploy!
+# Currently not working when deployed, server side jquery only works
+# on development.
+# Cheerio is the way to go.
+#
+
+# This crashes when deployed!
 #  $ = __meteor_bootstrap__.require('jquery');
+
+
+# Main question: how to get CS uid from nickname
 
 
 Meteor.startup ->
@@ -14,6 +25,7 @@ Meteor.startup ->
 
 
 cs_friends = (uid) ->
+  # Hopefully this will break with CS Ruby ;)
   httpcache 'http://www.couchsurfing.org/profile.html?ajax_action=show_all_friends&id=' + uid, (content) ->
     f_data = parser content
     save_objects f_data, uid
@@ -27,6 +39,7 @@ match_or_empty = (s, regexp) ->
   if m? then m[1] else ''
 
 parserow = (el) ->
+  # This will surely break if/when CS launches Ruby stuff.
   f = {}
   f.el = el
   f.html = $(el).html()
