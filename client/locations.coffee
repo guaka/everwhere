@@ -36,7 +36,12 @@ fbIcon = (c) ->
 
 class EverMap
   constructor: ->
-    @map = L.map("map",
+    markers = []
+    Meteor.startup =>
+      @createMap()
+
+  createMap: ->
+    map = @map = L.map("map",
       zoom: 4
       center: [51.5, -0.09]
       minZoom: 2
@@ -46,6 +51,13 @@ class EverMap
       attribution: "Map data &copy; <a href=\"http://openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://cloudmade.com/\">CloudMade</a>"
       maxZoom: 12
     ).addTo @map
+    @setCurrentPosition()
+
+    Meteor.subscribe "fbconnections", =>
+      console.log this
+      @map.on 'moveend', (e) =>
+        console.log this
+        @mapMoved(e)
 
   setCurrentPosition: ->
     navigator.geolocation.getCurrentPosition (location) =>
@@ -55,32 +67,38 @@ class EverMap
       @map.setView([ lat, lng ], 7)
 
 
-Meteor.startup ->
-  evermap = new EverMap
-  evermap.setCurrentPosition()
-  map = evermap.map
+  mapMoved: (e) ->
+    console.log 'map moved', e
 
-  Meteor.subscribe 'connections', ->  # CS connections
-    # console.log Connections
-    Connections.find({}).map (c) ->
-      marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo map
-      # marker = L.marker(c.latlng, {}).addTo map
-      text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
-      marker.bindPopup text
-
-  add_fb_location = (c, description) ->
-    l = c[description]
-    if l? and l.latlng?
-      marker = L.marker(l.latlng, { icon: fbIcon(c) }).addTo map
-      text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a><br />' +
-              description.replace('_location', '')
-      marker.bindPopup text
-
-  Meteor.subscribe "fbconnections", ->
-    f = FbConnections.findOne({})
+    f = FbConnections.findOne {}
     if f
       _.map f.data, (c) ->
         add_fb_location c, 'current_location'
         if c.hometown_location? and c.current_location and
            c.hometown_location.latlng != c.current_location.latlng
           add_fb_location c, 'hometown_location'
+
+add_fb_location = (c, description) ->
+  l = c[description]
+  bounds = map.getBounds()
+  if l? and l.latlng?
+    l.latlng = $.map l.latlng, parseFloat # contains crashes on strings
+    if bounds.contains(l.latlng)
+      marker = L.marker(l.latlng, { icon: fbIcon(c) }).addTo map
+      text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a><br />' +
+              description.replace('_location', '')
+      marker.bindPopup text
+
+
+
+evermap = new EverMap
+
+
+Meteor.startup ->
+
+  Meteor.subscribe 'connections', ->  # CS connections
+    Connections.find({}).map (c) ->
+      marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo map
+      # marker = L.marker(c.latlng, {}).addTo map
+      text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
+      marker.bindPopup text
