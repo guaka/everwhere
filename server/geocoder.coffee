@@ -62,7 +62,7 @@ class GeoGoogle extends Geocoder
       if obj and obj.Placemark
         dbggeo 'Googlegeo: ' + obj
         coor = obj.Placemark[0].Point.coordinates
-        latlng = [ coor[1], coor[0] ]
+        latlng = [ parseFloat coor[1], parseFloat coor[0] ]
         loc = { names: _.uniq( [ name, obj.name ] ), latlng: latlng }
         geocache_insert loc
 
@@ -75,7 +75,7 @@ class GeoNominatim extends Geocoder
       if obj
         obj0 = obj[0]
         if obj0 and obj0.display_name
-          loc = { names: _.uniq([ name, obj0.display_name ]), latlng: [ obj0.lat, obj0.lon ] }
+          loc = { names: _.uniq([ name, obj0.display_name ]), latlng: [ parseFloat obj0.lat, parseFloat obj0.lon ] }
           geocache_insert loc
           fine = true
       if not fine
@@ -92,7 +92,7 @@ class GeoNames extends Geocoder
     obj = parseJSON content
     if obj
       obj = obj.geonames[0]
-      loc = { names: _.uniq([ name, obj.name ]), latlng: [ obj.lat, obj.lng ] }
+      loc = { names: _.uniq([ name, obj.name ]), latlng: [ parseFloat obj.lat, parseFloat obj.lng ] }
       geocache_insert loc
 
 
