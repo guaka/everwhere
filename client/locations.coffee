@@ -5,6 +5,8 @@
 # global scope for map
 map = null
 
+
+
 putMarkers = (p) ->
   p.map (val) ->
     # console.log val.latlng, val.name, val.message
@@ -30,37 +32,41 @@ fbIcon = (c) ->
       )
 
 
-setLocation = (location) ->
-  lng = location.coords.longitude
-  lat = location.coords.latitude
-  Session.set('latlng', [ lat, lng ])
-  map.setView([ lat, lng ], 7)
 
+
+class EverMap
+  constructor: ->
+    @map = L.map("map",
+      zoom: 4
+      center: [51.5, -0.09]
+      minZoom: 2
+      maxZoom: 12
+    )
+    L.tileLayer("http://{s}.tile.cloudmade.com/9c9b2bf2a30e47bcab503fa46901de36/997/256/{z}/{x}/{y}.png",
+      attribution: "Map data &copy; <a href=\"http://openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://cloudmade.com/\">CloudMade</a>"
+      maxZoom: 12
+    ).addTo @map
+
+  setCurrentPosition: ->
+    navigator.geolocation.getCurrentPosition (location) =>
+      lng = location.coords.longitude
+      lat = location.coords.latitude
+      Session.set('latlng', [ lat, lng ])
+      @map.setView([ lat, lng ], 7)
 
 
 Meteor.startup ->
-  map = L.map("map",
-    zoom: 4
-    center: [51.5, -0.09]
-    minZoom: 2
-    maxZoom: 12
-  )
-  navigator.geolocation.getCurrentPosition(setLocation)
-
-  L.tileLayer("http://{s}.tile.cloudmade.com/9c9b2bf2a30e47bcab503fa46901de36/997/256/{z}/{x}/{y}.png",
-    attribution: "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://cloudmade.com\">CloudMade</a>"
-    maxZoom: 18
-  ).addTo map
+  evermap = new EverMap
+  evermap.setCurrentPosition()
+  map = evermap.map
 
   Meteor.subscribe 'connections', ->  # CS connections
     # console.log Connections
     Connections.find({}).map (c) ->
-      # console.log c.img
       marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo map
       # marker = L.marker(c.latlng, {}).addTo map
       text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
       marker.bindPopup text
-
 
   add_fb_location = (c, description) ->
     l = c[description]
