@@ -41,6 +41,7 @@ class EverMap
       @createMap()
 
   createMap: ->
+    document.markers = @markers = []
     map = @map = L.map("map",
       zoom: 4
       center: [51.5, -0.09]
@@ -55,16 +56,17 @@ class EverMap
 
     Meteor.subscribe "fbconnections", =>
       console.log this
+      @mapMoved null
       @map.on 'moveend', (e) =>
         console.log this
-        @mapMoved(e)
+        @mapMoved e
 
   setCurrentPosition: ->
     navigator.geolocation.getCurrentPosition (location) =>
       lng = location.coords.longitude
       lat = location.coords.latitude
       Session.set('latlng', [ lat, lng ])
-      @map.setView([ lat, lng ], 7)
+      @map.setView([ lat, lng ], 9)
 
 
   mapMoved: (e) ->
@@ -72,23 +74,26 @@ class EverMap
 
     f = FbConnections.findOne {}
     if f
-      _.map f.data, (c) ->
-        add_fb_location c, 'current_location'
+      _.map f.data, (c) =>
+        @addFbLocation c, 'current_location'
         if c.hometown_location? and c.current_location and
            c.hometown_location.latlng != c.current_location.latlng
-          add_fb_location c, 'hometown_location'
+          @addFbLocation c, 'hometown_location'
 
-add_fb_location = (c, description) ->
-  l = c[description]
-  bounds = map.getBounds()
-  if l? and l.latlng?
-    l.latlng = $.map l.latlng, parseFloat # contains crashes on strings
-    if bounds.contains(l.latlng)
-      marker = L.marker(l.latlng, { icon: fbIcon(c) }).addTo map
-      text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a><br />' +
-              description.replace('_location', '')
-      marker.bindPopup text
-
+  addFbLocation: (c, description) ->
+    l = c[description]
+    bounds = @map.getBounds()
+    if l? and l.latlng?
+      l.latlng = $.map l.latlng, parseFloat # contains crashes on strings
+      if bounds.contains(l.latlng)
+        marker_id = c.uid + description
+        if not _.contains(_.map(@markers, (m) -> m.id), marker_id)
+          marker = L.marker(l.latlng, { icon: fbIcon(c) }).addTo @map
+          marker.id = marker_id
+          text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a><br />' +
+                  description.replace('_location', '')
+          marker.bindPopup text
+          @markers.push marker
 
 
 evermap = new EverMap
