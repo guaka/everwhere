@@ -2,8 +2,6 @@
 # (c) 2012 Kasper Souren
 #
 
-# global scope for map
-map = null
 
 
 
@@ -52,6 +50,14 @@ class EverMap
       attribution: "Map data &copy; <a href=\"http://openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://cloudmade.com/\">CloudMade</a>"
       maxZoom: 12
     ).addTo @map
+    @oms = new OverlappingMarkerSpiderfier(@map,
+      nearbyDistance: 120
+      circleFootSeparation: 60
+      spiralLengthStart: 20
+      keepSpiderfied: true
+    )
+
+
     @setCurrentPosition()
 
     Meteor.subscribe "fbconnections", =>
@@ -79,6 +85,8 @@ class EverMap
         if c.hometown_location? and c.current_location and
            c.hometown_location.latlng != c.current_location.latlng
           @addFbLocation c, 'hometown_location'
+      for m in @markers
+        m.on('mouseover', m.openPopup.bind(m))
 
   addFbLocation: (c, description) ->
     l = c[description]
@@ -93,10 +101,17 @@ class EverMap
           text = '<a target="_blank" href="http://www.facebook.com/profile.php?id=' + c.uid + '">' + c.name + '</a><br />' +
                   description.replace('_location', '')
           marker.bindPopup text
+          @oms.addMarker marker
+
+          popup = new L.Popup();
+          @oms.addListener 'click', (marker) =>
+            popup.setContent text  # marker.desc
+            popup.setLatLng marker.getLatLng()
+            @map.openPopup popup
           @markers.push marker
 
 
-evermap = new EverMap
+document.evermap = evermap = new EverMap
 
 
 Meteor.startup ->
