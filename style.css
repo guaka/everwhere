@@ -138,6 +138,13 @@ body {
     float: right;
 }
 
+#top-float {
+    position: fixed;
+    top: 0;
+    left: 20px;
+}
+
+#top-float a,
 .footer-container a {
     color: #c77;
     text-decoration: none;
@@ -154,4 +161,14 @@ h2 {
 
 .leaflet-popup-content {
     text-align: center;
+}
+
+
+#login-info {
+    margin-left: 200px;
+}
+
+
+#todo {
+    min-height: 800px;
 }

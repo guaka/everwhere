@@ -30,10 +30,16 @@
         This is a work in progres. You might have to refresh once or twice or come back later<br />
       </div>
 
-      <h1 class="title">everwhe.re</h1>
+      <div id="top-float">
+        {{> menu}}
 
-      {{loginButtons}}
-      {{> number}}
+        <h1 class="title"><a href="#">everwhe.re</a></h1>
+      </div>
+
+      <div id="login-info">
+        {{loginButtons}}
+        {{> number}}
+      </div>
 
     </header>
   </div>
@@ -61,7 +67,6 @@
       <div id="last-commit">
         {{> last-commit}}
       </div>
-      {{> footer-menu}}
     </footer>
     <article>
       <hr />
@@ -70,18 +75,17 @@
       {{> faq}}
       <hr />
       {{> todo}}
-      <hr />
-      {{> footer-menu}}
     </article>
   </div>
 </body>
 
 
-<template name="footer-menu">
-  <a href="#">home</a>
-  <a href="#about">about</a>
-  <a href="#faq">faq</a>
-  <a href="#todo">todo</a>
+<template name="menu">
+  <div id="menu">
+    <a href="#about">about</a>
+    <a href="#faq">faq</a>
+    <a href="#todo">todo</a>
+  </div>
 </template>
 
 
