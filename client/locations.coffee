@@ -10,7 +10,7 @@ map = null
 putMarkers = (p) ->
   p.map (val) ->
     # console.log val.latlng, val.name, val.message
-    marker = L.marker(val.latlng, {}).addTo(map)
+    marker = L.marker(val.latlng, {}).addTo(evermap.map)
     marker.bindPopup(val.name + ': ' + val.message)
 
 
@@ -103,7 +103,7 @@ Meteor.startup ->
 
   Meteor.subscribe 'connections', ->  # CS connections
     Connections.find({}).map (c) ->
-      marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo map
-      # marker = L.marker(c.latlng, {}).addTo map
+      marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo evermap.map
+      # marker = L.marker(c.latlng, {}).addTo evermap.map
       text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
       marker.bindPopup text
