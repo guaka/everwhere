@@ -151,3 +151,7 @@ body {
 h2 {
     padding-top: 15px;
 }
+
+.leaflet-popup-content {
+    text-align: center;
+}
