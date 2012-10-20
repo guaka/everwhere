@@ -16,16 +16,17 @@ Meteor.startup ->
 
 
 fql_cache = (query, callback) ->
-  c = FqlCache.findOne query: query
-  # console.log c
+  # $exists is slow according to http://www.mongodb.org/display/DOCS/Advanced+Queries#AdvancedQueries-%24exists
+  c = FqlCache.findOne( { query: query, "data.error_code" : { $exists : false }} )
+  console.log 'in fqlcache:', c
   # TODO: error handling in case of expired FB sessions (quite common)
   if c and !c.data.error_code?
     callback c.data
   else
     FB.api { method: "fql.query", query: query }, (data) ->
       Fiber( ->
-        console.log "inserting into FqlCache"
-        FqlCache.insert { query: query, data: data }
+        if !data.error_code
+          FqlCache.insert { query: query, data: data }
       ).run()
       callback data
 
