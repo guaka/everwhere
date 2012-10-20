@@ -2,23 +2,23 @@
 # (c) 2012 Kasper Souren
 #
 
-# TODO: rename names of vars and such into chat nomenclature
 
-Players = new Meteor.Collection("players")
+Messages = new Meteor.Collection("messages")
 
 Template.number.number = ->
-  _.uniq(Players.find({}).map((x) ->
-    x.name
-  )).length
+  Meteor.users.find({}).count()
+  #_.uniq(Messages.find({}).map((x) ->
+  #  x.name
+  #)).length
 
 
 Template.status.status = ->
-  s = Players.findOne(Session.get("player_id"))
+  s = Messages.findOne(Session.get("player_id"))
   s.message  if s
 
 
 Template.messages.messages = ->
-  p = Players.find({},
+  p = Messages.find({},
     sort:
       lastSeen: -1
   )
@@ -42,7 +42,7 @@ getUsername = ->
 updatePlayer = (s) ->
   s = $("#input-status")[0].value  if s is `undefined`
   if s
-    Players.insert
+    Messages.insert
       message: s
       name: getUsername()
       latlng: Session.get("latlng")
@@ -69,8 +69,7 @@ Meteor.startup ->
     window.scrollTo 0, 0  unless window is top
 
 
-Meteor.subscribe "players", ->
-  # console.log('subscribe players');
+Meteor.subscribe "messages", ->
   # Only do something if we have a location
   if Session.get("latlng") isnt `undefined`
     pid = undefined
@@ -87,16 +86,17 @@ Meteor.subscribe "players", ->
       Session.set "player_id", pid
 
       # And we can check if the record is still there and or update it
-      if Players.find(pid).count() is 0
+      if Messages.find(pid).count() is 0
 
         # console.log('otherinsert');
         pid = insertPlayer()
       else
-        Players.update pid,
+        Messages.update pid,
           $set:
             latlng: Session.get("latlng")
 
-  putMarkers lastPositions(Players.find({}).map(id))
+  putMarkers lastPositions(Messages.find({}).map(id))
+
 
 lastPositions = (p) ->
   _.map _.uniq(_.pluck(p, "name")), (n) ->
