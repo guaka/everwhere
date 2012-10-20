@@ -31,5 +31,5 @@ meteorNpm = do() ->
 
       return module
 
-
+# meteorNpm.require('nodetime').profile()
 FB = meteorNpm.require "fb"
