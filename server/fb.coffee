@@ -17,7 +17,7 @@ Meteor.startup ->
 
 fql_cache = (query, callback) ->
   c = FqlCache.findOne query: query
-  console.log c
+  # console.log c
   # TODO: error handling in case of expired FB sessions (quite common)
   if c and !c.data.error_code?
     callback c.data
