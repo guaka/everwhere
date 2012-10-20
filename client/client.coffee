@@ -11,6 +11,10 @@ Template.number.number = ->
   #  x.name
   #)).length
 
+Template.number.fbfriendnumber = ->
+  if evermap? and evermap.markers?
+    evermap.markers.length # should become reactive
+
 
 Template.status.status = ->
   s = Messages.findOne(Session.get("player_id"))
