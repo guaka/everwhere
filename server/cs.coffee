@@ -7,8 +7,6 @@
 # Cheerio is the way to go.
 #
 
-# This crashes when deployed!
-#  $ = __meteor_bootstrap__.require('jquery');
 
 
 # Main question: how to get CS uid from nickname
@@ -32,18 +30,19 @@ cs_friends = (uid) ->
 
 
 
-
-
 match_or_empty = (s, regexp) ->
   m = s.match(regexp)
   if m? then m[1] else ''
 
 parserow = (el) ->
-  # This will surely break if/when CS launches Ruby stuff.
+  $ = cheerio.load()
   f = {}
+  f.uid = 0
   f.el = el
   f.html = $(el).html()
-  f.name = $('a.bold', el).text()
+
+  f.name = f.html.match(/class=\"bold\"( rel=\"met( acquaintance)?\")?>([\w+\s+]+)/)
+  # console.log f.name?[3]
   f.uid = f.html.match(/data-hover-profile=":(\w{1,12})"/)[1]
   f.country = match_or_empty f.html, /<strong>(\w+)<\/strong>/
   f.friendship = match_or_empty f.html, /Friendship Type: ([\w+\s+]+)/
@@ -52,17 +51,17 @@ parserow = (el) ->
   f.verified = match_or_empty f.html, /(verified)-icon/
   stuff = f.html.split(/<br \/>/)[1..]
   f.stuff = stuff
-  agegender = stuff[0].split(', ')
-  f.age = agegender[0]
-  f.gender = agegender[1]
-  cityprovince = stuff[1].split(', ')
-  f.city = cityprovince[0]
-  f.province = cityprovince[1]
+  agegender = stuff[0]?.split(', ')
+  f.age = agegender?[0]
+  f.gender = agegender?[1]
+  cityprovince = stuff[1]?.split(', ')
+  f.city = cityprovince?[0]
+  f.province = cityprovince?[1]
   f.country = $(stuff[2]).text()
-  stuff2 = stuff[3].split(/<br clear="all" \/>/)
-  # TODO: f.hoststuff = stuff[5].split('<sup>')[1..] if stuff[5]?
-  f.since = stuff2[0].replace('Friends since ', '').replace('  ', ' ')
-  f.description = $(stuff2[1]).text()
+  stuff2 = stuff[3]?.split(/<br clear="all" \/>/)
+  # TODO: f.hoststuff = stuff[5]?.split('<sup>')[1..] if stuff[5]?
+  f.since = stuff2?[0].replace('Friends since ', '').replace('  ', ' ')
+  f.description = $(stuff2?[1]).text()
 
   f.img = match_or_empty f.html, /(http\:\/\/s3.amazonaws.+jpg)/
   f.imgx = match_or_empty f.html, /jpg\" width=\"(\d+)\"/
@@ -71,7 +70,8 @@ parserow = (el) ->
 
 
 parser = (content) ->
-  friends = $("td.friends", content)
+  $ = cheerio.load(content)
+  friends = $("td.friends")
   _.map(friends, parserow)
 
 

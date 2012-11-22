@@ -91,7 +91,7 @@ class EverMap
   addFbLocation: (c, description) ->
     l = c[description]
     bounds = @map.getBounds()
-    if l? and l.latlng?
+    if l? and l.latlng? and l.latlng[0]? and l.latlng[1]?
       l.latlng = $.map l.latlng, parseFloat # contains crashes on strings
       if bounds.contains(l.latlng)
         marker_id = c.uid + description
@@ -118,7 +118,8 @@ Meteor.startup ->
 
   Meteor.subscribe 'connections', ->  # CS connections
     Connections.find({}).map (c) ->
-      marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo evermap.map
-      # marker = L.marker(c.latlng, {}).addTo evermap.map
-      text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
-      marker.bindPopup text
+      if c.latlng[0]? and c.latlng[1]?
+        marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo evermap.map
+        # marker = L.marker(c.latlng, {}).addTo evermap.map
+        text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
+        marker.bindPopup text
