@@ -22,9 +22,9 @@ meteorNpm = do() ->
       publicPath = path.resolve(base + '/public/' + modulePath)
       staticPath = path.resolve(base + '/bundle/static/' + modulePath)
 
-      if path.existsSync(publicPath)
+      if fs.existsSync(publicPath)
         module = require publicPath
-      else if path.existsSync(staticPath)
+      else if fs.existsSync(staticPath)
         module = require staticPath
       else
         module = null
@@ -33,3 +33,4 @@ meteorNpm = do() ->
 
 # meteorNpm.require('nodetime').profile()
 FB = meteorNpm.require "fb"
+cheerio = meteorNpm.require "cheerio"
