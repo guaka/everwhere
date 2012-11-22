@@ -1,0 +1,16 @@
+<template name="skyscanner">
+  <script type="text/javascript" src="http://api.skyscanner.net/api.ashx?key=9fa294a3-9aef-4ab9-bf82-0b22b0dc2c57"></script>  
+<script type="text/javascript">  
+    skyscanner.load('snippets','2');  
+    function main(){  
+        var snippet=new skyscanner.snippets.SearchPanelControl();  
+        snippet.setCurrency('USD');  
+        snippet.setShape('leaderboard');  
+        snippet.setDeparture('br');  
+        snippet.draw(document.getElementById('snippet_searchpanel'));  
+        }  
+    skyscanner.setOnLoadCallback(main);  
+</script>    
+  
+<div id="snippet_searchpanel" style="width: auto; height:auto;"></div>
+</template>
