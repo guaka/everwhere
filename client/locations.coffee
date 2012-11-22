@@ -69,10 +69,12 @@ class EverMap
 
   setCurrentPosition: ->
     navigator.geolocation.getCurrentPosition (location) =>
+      document.geo = location # for testing
       lng = location.coords.longitude
       lat = location.coords.latitude
-      Session.set('latlng', [ lat, lng ])
-      @map.setView([ lat, lng ], 9)
+      Session.set 'latlng', [ lat, lng ]
+      @map.setView [ lat, lng ], 9
+      skyscannerSetDeparture lat, lng
 
 
   mapMoved: (e) ->
