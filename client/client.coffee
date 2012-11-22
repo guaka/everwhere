@@ -5,33 +5,10 @@
 
 Messages = new Meteor.Collection("messages")
 
-Template.number.number = ->
-  Meteor.users.find({}).count()
-  #_.uniq(Messages.find({}).map((x) ->
-  #  x.name
-  #)).length
+# Template.number.fbfriendnumber = ->
+#  if evermap? and evermap.markers?
+#    evermap.markers.length # should become reactive
 
-Template.number.fbfriendnumber = ->
-  if evermap? and evermap.markers?
-    evermap.markers.length # should become reactive
-
-
-Template.status.status = ->
-  s = Messages.findOne(Session.get("player_id"))
-  s.message  if s
-
-
-Template.messages.messages = ->
-  p = Messages.find({},
-    sort:
-      lastSeen: -1
-  )
-  if p
-    p.map (i) ->
-      i.lastSeen = new Date(i.lastSeen)
-      i.lastSeen = zeropad2(i.lastSeen.getHours()) + ":" + zeropad2(i.lastSeen.getMinutes())
-      i.latlng = [i.latlng[0].toFixed(2), i.latlng[1].toFixed(2)]
-      i
 
 
 getUsername = ->
@@ -59,12 +36,6 @@ insertPlayer = ->
   $.cookie "player_id", pid
   pid
 
-
-Template.status.events "keyup #input-status": (evt) ->
-  if evt.keyCode is 13
-    updatePlayer()
-    $("#input-status").focus()
-    $("#input-status").val ""
 
 
 Meteor.startup ->
