@@ -71,7 +71,8 @@ class EverMap
       lat = location.coords.latitude
       Session.set 'latlng', [ lat, lng ]
       @map.setView [ lat, lng ], 9
-      skyscannerSetDeparture lat, lng
+      if skyscanner?
+        skyscannerSetDeparture lat, lng
 
 
   mapMoved: (e) ->
