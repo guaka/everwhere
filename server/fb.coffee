@@ -5,16 +5,6 @@
 FqlCache = new Meteor.Collection('fqlcache')
 
 
-Meteor.startup ->
-  Meteor.publish "fbconnections", ->
-    if this.userId
-      user = Meteor.users.findOne this.userId
-      # This will break for logins other than FB
-      fb_auth = user.services.facebook
-      fb_fetch fb_auth
-      return FbConnections.find( uid: fb_auth.id )
-
-
 fql_cache = (query, callback) ->
   # $exists is slow according to http://www.mongodb.org/display/DOCS/Advanced+Queries#AdvancedQueries-%24exists
   c = FqlCache.findOne( { query: query, "data.error_code" : { $exists : false }} )
@@ -29,7 +19,6 @@ fql_cache = (query, callback) ->
           FqlCache.insert { query: query, data: data }
       ).run()
       callback data
-
 
 
 fb_fetch = (auth_fb) ->
