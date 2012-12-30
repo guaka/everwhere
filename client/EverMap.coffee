@@ -113,7 +113,7 @@ document.evermap = evermap = new EverMap
 
 Meteor.startup ->
 
-  Meteor.subscribe 'connections', ->  # CS connections
+  Meteor.subscribe 'csconnections', ->  # CS connections
     Connections.find({}).map (c) ->
       if c.latlng[0]? and c.latlng[1]?
         marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo evermap.map

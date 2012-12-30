@@ -1,3 +1,4 @@
+FbConnections = new Meteor.Collection('fbconnections')
 
 Meteor.startup ->
   Meteor.publish "fbconnections", ->

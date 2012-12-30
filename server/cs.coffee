@@ -17,7 +17,7 @@ Meteor.startup ->
   # uid = '5F4MCK' #guaka
   # cs_friends uid
 
-  Meteor.publish "connections", ->
+  Meteor.publish "csconnections", ->
     if uid?
       Connections.find { from: uid }
 
