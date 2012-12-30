@@ -4,13 +4,10 @@
 
 
 
-
 putMarkers = (p) ->
   p.map (val) ->
-    # console.log val.latlng, val.name, val.message
     marker = L.marker(val.latlng, {}).addTo(evermap.map)
     marker.bindPopup(val.name + ': ' + val.message)
-
 
 
 csIcon = (c) ->
@@ -78,10 +75,7 @@ class EverMap
 
 
   mapMoved: (e) ->
-    console.log 'map moved', e
-
-    f = FbConnections.findOne {}
-    if f
+    if f = FbConnections.findOne {}
       _.map f.data, (c) =>
         @addFbLocation c, 'current_location'
         if c.hometown_location? and c.current_location and
