@@ -60,12 +60,6 @@ insertPlayer = ->
   pid
 
 
-Template.status.events "keyup #input-status": (evt) ->
-  if evt.keyCode is 13
-    updatePlayer()
-    $("#input-status").focus()
-    $("#input-status").val ""
-
 
 Meteor.startup ->
   $ ->
@@ -109,3 +103,8 @@ lastPositions = (p) ->
     _.last _.filter(p, (x) ->
       x.name is n
     )
+
+
+zeropad2 = (x) ->
+  x = String(x)
+  if x.length == 2 then x else '0' + x
