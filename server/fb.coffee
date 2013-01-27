@@ -3,7 +3,7 @@
 #
 
 FqlCache = new Meteor.Collection('fqlcache')
-FbConnections = new Meteor.Collection('fbconnections')
+
 
 Meteor.startup ->
   Meteor.publish "fbconnections", ->
@@ -31,6 +31,7 @@ fql_cache = (query, callback) ->
       callback data
 
 
+
 fb_fetch = (auth_fb) ->
   FB.setAccessToken auth_fb.accessToken
   # TODO: check if FB can return latlng for locations
@@ -47,4 +48,3 @@ fb_fetch = (auth_fb) ->
       FbConnections.remove { uid: auth_fb.id }
       FbConnections.insert { uid: auth_fb.id, data: data }
     ).run()
-

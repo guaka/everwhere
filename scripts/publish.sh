@@ -1,4 +1,4 @@
-cd ~/everwhere
+cd "$(dirname "$0")"/..
 
 git push
 

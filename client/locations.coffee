@@ -4,10 +4,13 @@
 
 
 
+
 putMarkers = (p) ->
   p.map (val) ->
+    # console.log val.latlng, val.name, val.message
     marker = L.marker(val.latlng, {}).addTo(evermap.map)
     marker.bindPopup(val.name + ': ' + val.message)
+
 
 
 csIcon = (c) ->
@@ -66,17 +69,17 @@ class EverMap
 
   setCurrentPosition: ->
     navigator.geolocation.getCurrentPosition (location) =>
-      document.geo = location # for testing
       lng = location.coords.longitude
       lat = location.coords.latitude
-      Session.set 'latlng', [ lat, lng ]
-      @map.setView [ lat, lng ], 9
-      if skyscanner?
-        skyscannerSetDeparture lat, lng
+      Session.set('latlng', [ lat, lng ])
+      @map.setView([ lat, lng ], 9)
 
 
   mapMoved: (e) ->
-    if f = FbConnections.findOne {}
+    console.log 'map moved', e
+
+    f = FbConnections.findOne {}
+    if f
       _.map f.data, (c) =>
         @addFbLocation c, 'current_location'
         if c.hometown_location? and c.current_location and
@@ -88,7 +91,7 @@ class EverMap
   addFbLocation: (c, description) ->
     l = c[description]
     bounds = @map.getBounds()
-    if l? and l.latlng? and l.latlng[0]? and l.latlng[1]?
+    if l? and l.latlng?
       l.latlng = $.map l.latlng, parseFloat # contains crashes on strings
       if bounds.contains(l.latlng)
         marker_id = c.uid + description
@@ -113,10 +116,9 @@ document.evermap = evermap = new EverMap
 
 Meteor.startup ->
 
-  Meteor.subscribe 'csconnections', ->  # CS connections
+  Meteor.subscribe 'connections', ->  # CS connections
     Connections.find({}).map (c) ->
-      if c.latlng[0]? and c.latlng[1]?
-        marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo evermap.map
-        # marker = L.marker(c.latlng, {}).addTo evermap.map
-        text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
-        marker.bindPopup text
+      marker = L.marker(c.latlng, if c.img then { icon: csIcon(c) } else {}).addTo evermap.map
+      # marker = L.marker(c.latlng, {}).addTo evermap.map
+      text = '<a target="_blank" href="http://www.couchsurfing.org/profile.html?id=' + c.uid + '">' + c.name + '</a>'
+      marker.bindPopup text

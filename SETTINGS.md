@@ -9,10 +9,12 @@ G client id -- same as below?
 G secret
 
 
-everwhe.re
+everwh.re
 
 FB api key  479035525459750
 FB secret   45289d896babf1a12bb16caef77eea5c
 
+
+to change to use everwh.re (not everwhe.re)
 G client id 266871188760.apps.googleusercontent.com
 G secret    Jzt3EjddYEa2dp5trB5Mv3tV

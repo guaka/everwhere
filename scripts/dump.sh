@@ -1,1 +1,1 @@
-mongodump $(meteor mongo -U everwhe.re | coffee scripts/url2args.cfee)
+mongodump $(meteor mongo -U everwh.re | coffee scripts/url2args.cfee)

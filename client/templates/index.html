@@ -1,5 +1,4 @@
 <head>
-  <!-- TradeDoubler site verification 2194742 -->
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.css" />
   <script src="http://cdn.leafletjs.com/leaflet-0.4/leaflet.js"></script>
 
@@ -8,10 +7,22 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
   
-  <title>everwhe.re | real life connections | phase #1 your facebook friends a on map</title>
+  <title>everwh.re | real life connections | phase #1 your facebook friends a on map</title>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16512257-2']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
 </head>
 
 <body>
+
   <div class="header-container">
     <header class="wrapper clearfix">
       <div style="float:right">
@@ -22,7 +33,7 @@
       <div id="top-float">
         {{> menu}}
 
-        <h1 class="title"><a href="#">everwhe.re</a></h1>
+        <h1 class="title"><a href="#">everwh.re</a></h1>
       </div>
 
       <div id="login-info">
@@ -36,6 +47,16 @@
     <div class="main wrapper clearfix">
 
       <div id="map"></div>
+      
+      <article>
+        <header>
+        </header>
+        <section>
+          {{> messages}}
+        </section>
+        <footer>
+        </footer>
+      </article>
       
     </div> <!-- #main -->
   </div> <!-- #main-container -->
@@ -64,6 +85,40 @@
     <a href="#faq">faq</a>
     <a href="#todo">todo</a>
   </div>
+</template>
+
+
+<template name="messages">
+  <div id="chat">
+    {{> status}}
+    <div id="chat-messages">
+    {{#each messages}}
+      {{> message}}
+    {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="message">
+  <p>
+    <span class="lastSeen">{{lastSeen}}</span> 
+    <span class="latlng">{{latlng}}</span>
+    {{name}}:
+    {{message}}
+  </p>
+</template>
+
+
+<template name="number">
+  <div class="number">
+    {{number}} people online now.
+    Showing {{fbfriendnumber}} friend locations.
+  </div>
+</template>
+
+<template name="status">
+  <label for="input-status">chat</label>
+  <input id="input-status" type="text" value="{{status}}">
 </template>
 
 
