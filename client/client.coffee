@@ -5,16 +5,6 @@
 
 Messages = new Meteor.Collection("messages")
 
-Template.number.number = ->
-  Meteor.users.find({}).count()
-  #_.uniq(Messages.find({}).map((x) ->
-  #  x.name
-  #)).length
-
-Template.number.fbfriendnumber = ->
-  if evermap? and evermap.markers?
-    evermap.markers.length # should become reactive
-
 
 
 
