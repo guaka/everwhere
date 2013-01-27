@@ -47,17 +47,7 @@
     <div class="main wrapper clearfix">
 
       <div id="map"></div>
-      
-      <article>
-        <header>
-        </header>
-        <section>
-          {{> messages}}
-        </section>
-        <footer>
-        </footer>
-      </article>
-      
+
     </div> <!-- #main -->
   </div> <!-- #main-container -->
   
@@ -72,8 +62,6 @@
       {{> about}}
       <hr />
       {{> faq}}
-      <hr />
-      {{> todo}}
     </article>
   </div>
 </body>
@@ -88,16 +76,6 @@
 </template>
 
 
-<template name="messages">
-  <div id="chat">
-    {{> status}}
-    <div id="chat-messages">
-    {{#each messages}}
-      {{> message}}
-    {{/each}}
-    </div>
-  </div>
-</template>
 
 <template name="message">
   <p>
@@ -114,11 +92,6 @@
     {{number}} people online now.
     Showing {{fbfriendnumber}} friend locations.
   </div>
-</template>
-
-<template name="status">
-  <label for="input-status">chat</label>
-  <input id="input-status" type="text" value="{{status}}">
 </template>
 
 
