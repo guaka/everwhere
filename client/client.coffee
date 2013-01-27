@@ -16,22 +16,6 @@ Template.number.fbfriendnumber = ->
     evermap.markers.length # should become reactive
 
 
-Template.status.status = ->
-  s = Messages.findOne(Session.get("player_id"))
-  s.message  if s
-
-
-Template.messages.messages = ->
-  p = Messages.find({},
-    sort:
-      lastSeen: -1
-  )
-  if p
-    p.map (i) ->
-      i.lastSeen = new Date(i.lastSeen)
-      i.lastSeen = zeropad2(i.lastSeen.getHours()) + ":" + zeropad2(i.lastSeen.getMinutes())
-      i.latlng = [i.latlng[0].toFixed(2), i.latlng[1].toFixed(2)]
-      i
 
 
 getUsername = ->
